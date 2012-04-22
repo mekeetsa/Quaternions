@@ -1,0 +1,5028 @@
+(* Content-type: application/mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 6.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       145,          7]
+NotebookDataLength[    183147,       5019]
+NotebookOptionsPosition[    170984,       4611]
+NotebookOutlinePosition[    171707,       4637]
+CellTagsIndexPosition[    171664,       4634]
+WindowFrame->Normal
+ContainsDynamic->False*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Rotations of Moment of Inertia Tensor ", "Title",
+ CellChangeTimes->{{3.5434118480625*^9, 3.54341185275*^9}, {
+   3.543413773515625*^9, 3.543413778109375*^9}, {3.5434989699375*^9, 
+   3.543499005359375*^9}, {3.543501835671875*^9, 3.54350183959375*^9}, {
+   3.543504440765625*^9, 3.54350444090625*^9}, {3.543549277953125*^9, 
+   3.543549280203125*^9}, {3.54359520428125*^9, 3.543595210890625*^9}, {
+   3.543826484859375*^9, 3.5438264864375*^9}, {3.543865539265625*^9, 
+   3.5438656003125*^9}, {3.543865636796875*^9, 3.5438656395625*^9}, {
+   3.54386970009375*^9, 3.543869700359375*^9}, 3.543871498234375*^9, {
+   3.54387172984375*^9, 3.5438717825*^9}, {3.54390457940625*^9, 
+   3.543904655171875*^9}, {3.5439046955*^9, 3.543904738453125*^9}, 
+   3.570198354171875*^9, {3.57019845721875*^9, 3.57019848415625*^9}, {
+   3.57020503609375*^9, 3.570205070953125*^9}}],
+
+Cell["using Quaternions", "Subtitle",
+ CellChangeTimes->{{3.543871748359375*^9, 3.543871773359375*^9}, 
+   3.543904564828125*^9, {3.543904745578125*^9, 3.54390474721875*^9}, {
+   3.543909954640625*^9, 3.54390995496875*^9}},
+ FontFamily->"Arial",
+ FontSize->22,
+ FontWeight->"Bold",
+ FontColor->RGBColor[0., 0.5019607843137255, 0.7529411764705882]],
+
+Cell["\<\
+Mikica B Kocic, 2012-04-22, v0.3
+\
+\>", "Text",
+ CellChangeTimes->{{3.543871748359375*^9, 3.543871773359375*^9}, 
+   3.543904564828125*^9, {3.543910645453125*^9, 3.54391067640625*^9}, {
+   3.543910742640625*^9, 3.543910748265625*^9}, {3.54398828440625*^9, 
+   3.543988291421875*^9}, {3.570198248484375*^9, 3.570198249546875*^9}, {
+   3.570198589984375*^9, 3.57019859034375*^9}, {3.5702056941875*^9, 
+   3.5702056958125*^9}, {3.57068686540625*^9, 3.570686865484375*^9}},
+ TextAlignment->Center],
+
+Cell["\<\
+There is a wonderful connection between complex numbers (and quaternions, as \
+their extension) and geometry in which, translations correspond to additions, \
+rotations and scaling to multiplications, and reflections to conjugations.\
+\>", "Text",
+ CellChangeTimes->{{3.5438649420625*^9, 3.543865105078125*^9}, {
+   3.54386569696875*^9, 3.543865707828125*^9}, {3.543865803578125*^9, 
+   3.543865898515625*^9}, {3.543866047734375*^9, 3.543866229828125*^9}, {
+   3.54386639521875*^9, 3.5438665633125*^9}, {3.5438666160625*^9, 
+   3.543866667859375*^9}, {3.543867990703125*^9, 3.543868022921875*^9}, {
+   3.5438697216875*^9, 3.54386972715625*^9}, 3.543871457859375*^9, {
+   3.54387375603125*^9, 3.54387378928125*^9}, {3.543904141015625*^9, 
+   3.5439041515625*^9}, {3.543904189890625*^9, 3.543904192765625*^9}, 
+   3.543904315453125*^9, 3.57019831*^9, {3.57020489978125*^9, 
+   3.570204947328125*^9}}],
+
+Cell["\<\
+However, the beauty of describing spatial rotations with quaternions is \
+shadowed by an expression like:\
+\>", "Text",
+ CellChangeTimes->{{3.5438649420625*^9, 3.543865105078125*^9}, {
+   3.54386569696875*^9, 3.543865707828125*^9}, {3.543865803578125*^9, 
+   3.543865898515625*^9}, {3.543866047734375*^9, 3.543866229828125*^9}, {
+   3.54386639521875*^9, 3.5438665633125*^9}, {3.5438666160625*^9, 
+   3.543866667859375*^9}, {3.543867990703125*^9, 3.543868022921875*^9}, {
+   3.5438697216875*^9, 3.54386972715625*^9}, 3.543871457859375*^9, {
+   3.54387375603125*^9, 3.54387378928125*^9}, {3.543904141015625*^9, 
+   3.5439041515625*^9}, {3.543905960296875*^9, 3.543905993609375*^9}, {
+   3.57020495753125*^9, 3.5702049954375*^9}, {3.570207538359375*^9, 
+   3.57020755428125*^9}}],
+
+Cell[BoxData[
+ FormBox[
+  StyleBox[
+   RowBox[{
+    RowBox[{"(", "\[NoBreak]", GridBox[{
+       {
+        RowBox[{"1", "-", 
+         RowBox[{"2", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            SuperscriptBox["y", "2"], "+", 
+            SuperscriptBox["z", "2"]}], ")"}]}]}], 
+        RowBox[{
+         RowBox[{"2", " ", "x", " ", "y"}], "-", 
+         RowBox[{"2", " ", "w", " ", "z"}]}], 
+        RowBox[{
+         RowBox[{"2", " ", "w", " ", "y"}], "+", 
+         RowBox[{"2", " ", "x", " ", "z"}]}]},
+       {
+        RowBox[{
+         RowBox[{"2", " ", "x", " ", "y"}], "+", 
+         RowBox[{"2", " ", "w", " ", "z"}]}], 
+        RowBox[{"1", "-", 
+         RowBox[{"2", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            SuperscriptBox["x", "2"], "+", 
+            SuperscriptBox["z", "2"]}], ")"}]}]}], 
+        RowBox[{
+         RowBox[{"2", " ", "y", " ", "z"}], "-", 
+         RowBox[{"2", " ", "w", " ", "x"}]}]},
+       {
+        RowBox[{
+         RowBox[{"2", " ", "x", " ", "z"}], "-", 
+         RowBox[{"2", " ", "w", " ", "y"}]}], 
+        RowBox[{
+         RowBox[{"2", " ", "w", " ", "x"}], "+", 
+         RowBox[{"2", " ", "y", " ", "z"}]}], 
+        RowBox[{"1", "-", 
+         RowBox[{"2", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            SuperscriptBox["x", "2"], "+", 
+            SuperscriptBox["y", "2"]}], ")"}]}]}]}
+      },
+      GridBoxAlignment->{
+       "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+        "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+      GridBoxSpacings->{"Columns" -> {
+          Offset[0.27999999999999997`], {
+           Offset[0.7]}, 
+          Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+          Offset[0.2], {
+           Offset[0.4]}, 
+          Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}], 
+    "\[CenterDot]", "\[LineSeparator]", "\[CenterDot]", 
+    StyleBox["\[ScriptCapitalJ]",
+     FontSlant->"Plain"], "\[CenterDot]", 
+    SuperscriptBox[
+     RowBox[{"(", "\[NoBreak]", GridBox[{
+        {
+         RowBox[{"1", "-", 
+          RowBox[{"2", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             SuperscriptBox["y", "2"], "+", 
+             SuperscriptBox["z", "2"]}], ")"}]}]}], 
+         RowBox[{
+          RowBox[{"2", " ", "x", " ", "y"}], "-", 
+          RowBox[{"2", " ", "w", " ", "z"}]}], 
+         RowBox[{
+          RowBox[{"2", " ", "w", " ", "y"}], "+", 
+          RowBox[{"2", " ", "x", " ", "z"}]}]},
+        {
+         RowBox[{
+          RowBox[{"2", " ", "x", " ", "y"}], "+", 
+          RowBox[{"2", " ", "w", " ", "z"}]}], 
+         RowBox[{"1", "-", 
+          RowBox[{"2", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             SuperscriptBox["x", "2"], "+", 
+             SuperscriptBox["z", "2"]}], ")"}]}]}], 
+         RowBox[{
+          RowBox[{"2", " ", "y", " ", "z"}], "-", 
+          RowBox[{"2", " ", "w", " ", "x"}]}]},
+        {
+         RowBox[{
+          RowBox[{"2", " ", "x", " ", "z"}], "-", 
+          RowBox[{"2", " ", "w", " ", "y"}]}], 
+         RowBox[{
+          RowBox[{"2", " ", "w", " ", "x"}], "+", 
+          RowBox[{"2", " ", "y", " ", "z"}]}], 
+         RowBox[{"1", "-", 
+          RowBox[{"2", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             SuperscriptBox["x", "2"], "+", 
+             SuperscriptBox["y", "2"]}], ")"}]}]}]}
+       },
+       GridBoxAlignment->{
+        "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+         "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+       GridBoxSpacings->{"Columns" -> {
+           Offset[0.27999999999999997`], {
+            Offset[0.7]}, 
+           Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+           Offset[0.2], {
+            Offset[0.4]}, 
+           Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}], 
+     StyleBox["T",
+      FontSlant->"Plain"]]}],
+   FontFamily->"Times New Roman",
+   FontSize->14], TraditionalForm]], "DisplayFormula",
+ CellChangeTimes->{{3.5438649420625*^9, 3.54386510753125*^9}, {
+   3.543865523515625*^9, 3.543865525328125*^9}, {3.54386587184375*^9, 
+   3.54386587821875*^9}, {3.543871599875*^9, 3.543871600609375*^9}, {
+   3.543871690046875*^9, 3.54387169328125*^9}, {3.54420051665625*^9, 
+   3.544200543578125*^9}, {3.544201237359375*^9, 3.544201239890625*^9}, 
+   3.544201298515625*^9, {3.57020500359375*^9, 3.57020500965625*^9}, {
+   3.570206819296875*^9, 3.57020682*^9}}],
+
+Cell["\<\
+which actually represents such simple transformation as the rotation of \
+moment of inertia tensor using quaternions [2].\
+\>", "Text",
+ CellChangeTimes->{{3.5438657961875*^9, 3.54386581940625*^9}, {
+  3.5438662321875*^9, 3.543866254015625*^9}, {3.543866677*^9, 
+  3.543866703171875*^9}, {3.54386799775*^9, 3.54386807509375*^9}, {
+  3.543905945390625*^9, 3.543905957734375*^9}, {3.54390600196875*^9, 
+  3.543906002625*^9}, {3.543906179328125*^9, 3.543906179390625*^9}, {
+  3.5706868774375*^9, 3.57068687784375*^9}}],
+
+Cell["\<\
+The purpose of this document is to express spatial rotations of a moment of \
+inertia tensor in the pure quaternionic form and to highlight the algebraical \
+meaning behind such rotations by proving some interesting theorems.\
+\>", "Text",
+ CellChangeTimes->{{3.5438657961875*^9, 3.54386581940625*^9}, {
+  3.5438662321875*^9, 3.54386638875*^9}, {3.543868296578125*^9, 
+  3.543868415078125*^9}, {3.543869746875*^9, 3.543869763953125*^9}, {
+  3.543872151015625*^9, 3.5438721555*^9}, {3.5438738179375*^9, 
+  3.543873849953125*^9}, {3.570198314640625*^9, 3.57019831515625*^9}, {
+  3.570207427875*^9, 3.570207433*^9}, {3.570688351890625*^9, 
+  3.57068837225*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Conventions and Definitions", "Section",
+ CellChangeTimes->{{3.543815133390625*^9, 3.5438151875625*^9}, {
+   3.5438397990625*^9, 3.543839802078125*^9}, {3.543846449484375*^9, 
+   3.54384645353125*^9}, 3.54386980628125*^9}],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Load quaternions package (see ",
+ StyleBox["Quat.nb", "Output"],
+ " for the annotated source code)"
+}], "TextGroup",
+ CellChangeTimes->{{3.543730884140625*^9, 3.543730886234375*^9}, {
+  3.54382181525*^9, 3.543821817390625*^9}, {3.543840228140625*^9, 
+  3.54384028334375*^9}, {3.54386001953125*^9, 3.54386002353125*^9}, {
+  3.5438606009375*^9, 3.5438606108125*^9}, {3.543861898515625*^9, 
+  3.54386195425*^9}, {3.54386674290625*^9, 3.54386679134375*^9}, {
+  3.543869782171875*^9, 3.54386978328125*^9}, {3.570686881765625*^9, 
+  3.57068688278125*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Get", "[", " ", 
+   RowBox[{"\"\<Quat.m\>\"", ",", 
+    RowBox[{"Path", "->", 
+     RowBox[{"{", " ", 
+      RowBox[{"NotebookDirectory", " ", "[", "]"}], "  ", "}"}]}]}], " ", 
+   "]"}], ";"}]], "Input",
+ CellChangeTimes->{{3.54354933078125*^9, 3.543549419359375*^9}, {
+   3.543554802265625*^9, 3.543554832015625*^9}, 3.543555675484375*^9, {
+   3.54358852940625*^9, 3.54358853284375*^9}, {3.543814439265625*^9, 
+   3.5438144395625*^9}}]
+}, Open  ]],
+
+Cell["Conventions", "Subsubsection",
+ CellChangeTimes->{{3.543730884140625*^9, 3.543730886234375*^9}, {
+  3.54382181525*^9, 3.543821817390625*^9}, {3.543840228140625*^9, 
+  3.54384028334375*^9}, {3.54386001953125*^9, 3.54386002353125*^9}, {
+  3.5438606009375*^9, 3.5438606108125*^9}, {3.543866932609375*^9, 
+  3.54386693625*^9}, {3.5438689958125*^9, 3.5438689969375*^9}}],
+
+Cell[TextData[{
+ "In this document, matrices, vectors and matrix representation of \
+quaternions are shown in uppercase font (roman-bold font in text) and \
+quaternions and other numbers are shown in lowercase font (italic font in \
+text). Since the symbol ",
+ StyleBox["I", "Output",
+  FontWeight->"Bold"],
+ " in ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " is used for imaginary unit, the selected symbol for moment of inertia is \
+the uppercase script J i.e. \[ScriptCapitalJ]. The identity matrix is \
+suffixed with a number of dimensions, i.e. ",
+ StyleBox["I4", "Output",
+  FontWeight->"Bold"],
+ " represents the identity matrix in ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["\[DoubleStruckCapitalR]", "4"], TraditionalForm]]],
+ "."
+}], "TextGroup",
+ CellChangeTimes->{{3.543868591421875*^9, 3.54386895325*^9}, {
+   3.5438721873125*^9, 3.54387219290625*^9}, 3.570205521609375*^9, {
+   3.5702067383125*^9, 3.57020676659375*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Matrices 4\[Cross]4 originated from quaternions may be geometrically \
+partitioned into scalar (real), vector (pure imaginary) and cross-product \
+parts [3]. Such partitions are visualized using row and column divider lines \
+throughout this document:\
+\>", "TextGroup",
+ CellChangeTimes->{{3.543826975203125*^9, 3.543827018375*^9}, {
+   3.543827365671875*^9, 3.543827438203125*^9}, {3.543862085078125*^9, 
+   3.54386209853125*^9}, {3.543862193171875*^9, 3.54386219484375*^9}, {
+   3.543862383859375*^9, 3.543862411234375*^9}, {3.543862450875*^9, 
+   3.54386245234375*^9}, 3.54386270528125*^9, {3.54387394746875*^9, 
+   3.54387400621875*^9}, {3.5439062903125*^9, 3.54390630415625*^9}, {
+   3.543907477*^9, 3.5439075654375*^9}, {3.543907600765625*^9, 
+   3.5439077088125*^9}, {3.570207562390625*^9, 3.570207564140625*^9}}],
+
+Cell[TextData[{
+ "\t",
+ Cell[BoxData[
+  StyleBox[
+   RowBox[{"(", "\[NoBreak]", GridBox[{
+      {
+       StyleBox["scalar",
+        FontWeight->"Bold",
+        FontSlant->"Italic"], "\[Placeholder]", 
+       StyleBox["vector",
+        FontWeight->"Bold",
+        FontSlant->"Italic"], "\[Placeholder]"},
+      {"\[Placeholder]", "\[Placeholder]", "\[Placeholder]", 
+       "\[Placeholder]"},
+      {
+       SuperscriptBox[
+        StyleBox["vector",
+         FontWeight->"Bold",
+         FontSlant->"Italic"], "\[Transpose]"], "\[Placeholder]", 
+       StyleBox[
+        RowBox[{"cross", " ", "product", " "}],
+        FontSlant->"Italic"], "\[Placeholder]"},
+      {"\[Placeholder]", "\[Placeholder]", "\[Placeholder]", 
+       "\[Placeholder]"}
+     },
+     GridBoxDividers->{
+      "ColumnsIndexed" -> {2 -> True}, "RowsIndexed" -> {2 -> True}}], 
+    "\[NoBreak]", ")"}], "InlineFormula",
+   FontFamily->"Times New Roman",
+   FontSize->14,
+   FontWeight->"Bold"]],
+  CellChangeTimes->{{3.543731135046875*^9, 3.54373124921875*^9}, {
+    3.543815496796875*^9, 3.543815501921875*^9}, {3.543815558046875*^9, 
+    3.543815591703125*^9}, {3.54382838546875*^9, 3.543828415078125*^9}, 
+    3.54382846775*^9, {3.54382881446875*^9, 3.543828893765625*^9}, {
+    3.543847871203125*^9, 3.5438479610625*^9}},
+  FontFamily->"Courier New"]
+}], "Text",
+ CellChangeTimes->{{3.543826975203125*^9, 3.543827018375*^9}, {
+  3.543827365671875*^9, 3.543827438203125*^9}, {3.543862085078125*^9, 
+  3.54386209853125*^9}, {3.543862193171875*^9, 3.54386219484375*^9}, {
+  3.543862383859375*^9, 3.5438624046875*^9}, {3.543862463*^9, 
+  3.54386264025*^9}, {3.543862680921875*^9, 3.5438626814375*^9}, {
+  3.543906254234375*^9, 3.543906284375*^9}}]
+}, Open  ]],
+
+Cell["General symbols and variables used in theorems (definitions)", \
+"Subsubsection",
+ CellChangeTimes->{{3.543730884140625*^9, 3.543730886234375*^9}, {
+  3.54382181525*^9, 3.543821817390625*^9}, {3.543840228140625*^9, 
+  3.54384028334375*^9}, {3.543860028625*^9, 3.543860044453125*^9}, {
+  3.543861992640625*^9, 3.543862010765625*^9}, {3.57068689084375*^9, 
+  3.57068689440625*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Hamilton's quaternions ",
+ StyleBox["q",
+  FontSlant->"Italic"],
+ ", ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["q", "1"], TraditionalForm]]],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["q", "2"], TraditionalForm]]],
+ " with real number components (but not with complex number components as \
+biquaternions; see definition of default ",
+ StyleBox["$Assumptions", "Output"],
+ " bellow):"
+}], "TextGroup",
+ PageBreakBelow->False,
+ CellChangeTimes->{{3.543840287953125*^9, 3.54384041046875*^9}, {
+   3.543840456421875*^9, 3.543840486953125*^9}, {3.54384053725*^9, 
+   3.54384055646875*^9}, {3.54386005603125*^9, 3.543860060828125*^9}, {
+   3.543860167828125*^9, 3.54386017203125*^9}, {3.54386201584375*^9, 
+   3.543862035453125*^9}, 3.5438665841875*^9, {3.54386989596875*^9, 
+   3.543869978203125*^9}, {3.543988775671875*^9, 3.54398878*^9}, 
+   3.57020679953125*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"q", "=", 
+   RowBox[{"\[ScriptCapitalQ]", "[", " ", 
+    RowBox[{"w", ",", "x", ",", "y", ",", "z"}], " ", "]"}]}], ";"}]], "Input",\
+
+ CellChangeTimes->{
+  3.543664702515625*^9, {3.543665147640625*^9, 3.543665168875*^9}, {
+   3.543681466078125*^9, 3.54368148859375*^9}, {3.543685042578125*^9, 
+   3.54368512359375*^9}, {3.543688389890625*^9, 3.5436883903125*^9}, {
+   3.543815397875*^9, 3.543815420921875*^9}, 3.543862050171875*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"q1", "=", 
+   RowBox[{"\[ScriptCapitalQ]", "[", " ", 
+    RowBox[{"w1", ",", "x1", ",", "y1", ",", "z1"}], " ", "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{
+  3.543664702515625*^9, {3.543665147640625*^9, 3.543665168875*^9}, {
+   3.543681466078125*^9, 3.54368148859375*^9}, {3.543685042578125*^9, 
+   3.54368512359375*^9}, {3.543688389890625*^9, 3.5436883903125*^9}, {
+   3.543815371734375*^9, 3.5438153876875*^9}, {3.54381542803125*^9, 
+   3.543815428484375*^9}, 3.543862048453125*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"q2", "=", 
+   RowBox[{"\[ScriptCapitalQ]", "[", " ", 
+    RowBox[{"w2", ",", "x2", ",", "y2", ",", "z2"}], " ", "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{
+  3.543664702515625*^9, {3.543665147640625*^9, 3.543665168875*^9}, {
+   3.543681466078125*^9, 3.54368148859375*^9}, {3.543685042578125*^9, 
+   3.54368512359375*^9}, {3.543688389890625*^9, 3.5436883903125*^9}, {
+   3.543815371734375*^9, 3.5438153876875*^9}, {3.54381542803125*^9, 
+   3.543815428484375*^9}, 3.543862043140625*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Identity matrix ",
+ StyleBox["I4", "Output"],
+ " in ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["\[DoubleStruckCapitalR]", "4"], TraditionalForm]]],
+ ":"
+}], "TextGroup",
+ PageBreakBelow->False,
+ CellChangeTimes->{{3.543840287953125*^9, 3.543840320140625*^9}, {
+   3.54384049853125*^9, 3.54384050659375*^9}, {3.5438698841875*^9, 
+   3.5438698848125*^9}, 3.570206802140625*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"I4", "=", 
+   RowBox[{"IdentityMatrix", "[", "4", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.543842841015625*^9, 3.543842859078125*^9}, {
+  3.54384323309375*^9, 3.5438432340625*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Common ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["\[DoubleStruckCapitalR]", "4"], TraditionalForm]]],
+ " matrices ",
+ StyleBox["A",
+  FontWeight->"Bold"],
+ " and ",
+ StyleBox["B",
+  FontWeight->"Bold"],
+ ":"
+}], "TextGroup",
+ CellChangeTimes->{{3.543840287953125*^9, 3.5438403104375*^9}, {
+  3.543840428328125*^9, 3.543840442890625*^9}, {3.5438405135*^9, 
+  3.543840517828125*^9}, {3.54386203025*^9, 3.543862030984375*^9}, {
+  3.543869860265625*^9, 3.543869878296875*^9}, {3.543907781484375*^9, 
+  3.543907782296875*^9}, {3.57020680415625*^9, 3.570206805375*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"A", " ", "=", " ", 
+   TagBox[
+    RowBox[{"(", "\[NoBreak]", GridBox[{
+       {"Aww", "Awx", "Awy", "Awz"},
+       {"Axw", "Axx", "Axy", "Axz"},
+       {"Ayw", "Ayx", "Ayy", "Ayz"},
+       {"Azw", "Azx", "Azy", "Azz"}
+      },
+      GridBoxDividers->{
+       "ColumnsIndexed" -> {2 -> True}, "RowsIndexed" -> {2 -> True}}], 
+     "\[NoBreak]", ")"}],
+    Function[BoxForm`e$, 
+     MatrixForm[BoxForm`e$]]]}], ";"}]], "Input",
+ CellChangeTimes->{{3.54381532403125*^9, 3.543815356109375*^9}, {
+  3.54384290134375*^9, 3.543842906078125*^9}, {3.54386012603125*^9, 
+  3.54386013309375*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"B", " ", "=", " ", 
+   TagBox[
+    RowBox[{"(", "\[NoBreak]", GridBox[{
+       {"Bww", "Bwx", "Bwy", "Bwz"},
+       {"Bxw", "Bxx", "Bxy", "Bxz"},
+       {"Byw", "Byx", "Byy", "Byz"},
+       {"Bzw", "Bzx", "Bzy", "Bzz"}
+      },
+      GridBoxDividers->{
+       "ColumnsIndexed" -> {2 -> True}, "RowsIndexed" -> {2 -> True}}], 
+     "\[NoBreak]", ")"}],
+    Function[BoxForm`e$, 
+     MatrixForm[BoxForm`e$]]]}], ";"}]], "Input",
+ CellChangeTimes->{{3.54381532403125*^9, 3.543815356109375*^9}, {
+  3.5702051235625*^9, 3.570205124171875*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Symmetrical ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["\[DoubleStruckCapitalR]", "4"], TraditionalForm]]],
+ " matrix representing moment of inertia tensor \[ScriptCapitalJ]:"
+}], "TextGroup",
+ CellChangeTimes->{{3.543840287953125*^9, 3.543840343859375*^9}, {
+   3.543840449765625*^9, 3.54384045171875*^9}, {3.5438405260625*^9, 
+   3.543840533015625*^9}, 3.54386019271875*^9, {3.5438698588125*^9, 
+   3.543869874234375*^9}, {3.5439074628125*^9, 3.543907466328125*^9}, {
+   3.570206807859375*^9, 3.57020680865625*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"\[ScriptCapitalJ]", "=", 
+   RowBox[{"(", "\[NoBreak]", GridBox[{
+      {"1", "0", "0", "0"},
+      {"0", "Ixx", "Ixy", "Ixz"},
+      {"0", "Ixy", "Iyy", "Iyz"},
+      {"0", "Ixz", "Iyz", "Izz"}
+     },
+     GridBoxDividers->{
+      "ColumnsIndexed" -> {2 -> True}, "RowsIndexed" -> {2 -> True}}], 
+    "\[NoBreak]", ")"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.54366475571875*^9, 3.543664909421875*^9}, {
+  3.54368091371875*^9, 3.543680931875*^9}, {3.543681952671875*^9, 
+  3.54368196296875*^9}, {3.54368805109375*^9, 3.54368806671875*^9}, {
+  3.5438154425625*^9, 3.5438154465625*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Default assumption used for all asserted statements and expressions in this \
+notebook is that previously defined entities ",
+ StyleBox["q",
+  FontSlant->"Italic"],
+ ", ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["q", "1"], TraditionalForm]]],
+ ", ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["q", "2"], TraditionalForm]]],
+ ", ",
+ StyleBox["A",
+  FontWeight->"Bold"],
+ ", ",
+ StyleBox["B",
+  FontWeight->"Bold"],
+ " and \[ScriptCapitalJ] are on field of \[DoubleStruckCapitalR], i.e. that \
+their components are elements in \[DoubleStruckCapitalR]:"
+}], "TextGroup",
+ CellChangeTimes->{{3.543840287953125*^9, 3.54384041046875*^9}, {
+   3.543840456421875*^9, 3.543840486953125*^9}, {3.54384053725*^9, 
+   3.543840613703125*^9}, {3.543869838625*^9, 3.54386986846875*^9}, {
+   3.543869985484375*^9, 3.543870016390625*^9}, {3.543907814578125*^9, 
+   3.543907958578125*^9}, 3.570206810953125*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"$Assumptions", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"Flatten", "@", 
+     RowBox[{"{", " ", 
+      RowBox[{
+       RowBox[{"ToList", "/@", 
+        RowBox[{"{", " ", 
+         RowBox[{"q", ",", " ", "q1", ",", " ", "q2"}], " ", "}"}]}], ",", 
+       "A", ",", "B", ",", "\[ScriptCapitalJ]"}], "}"}]}], "\[Element]", 
+    "Reals"}]}], ";"}]], "Input",
+ CellChangeTimes->{
+  3.543664702515625*^9, {3.543665147640625*^9, 3.543665168875*^9}, {
+   3.543681466078125*^9, 3.54368148859375*^9}, {3.543685042578125*^9, 
+   3.54368512359375*^9}, {3.543688389890625*^9, 3.5436883903125*^9}, {
+   3.543815397875*^9, 3.543815420921875*^9}, {3.54383115915625*^9, 
+   3.54383135153125*^9}, {3.543860136453125*^9, 3.543860139375*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Different Types of Multiplications", "Subsection",
+ CellChangeTimes->{{3.543730884140625*^9, 3.543730886234375*^9}, {
+  3.54382181525*^9, 3.543821817390625*^9}, {3.543840228140625*^9, 
+  3.54384028334375*^9}, {3.54386001953125*^9, 3.54386002353125*^9}, {
+  3.5438606009375*^9, 3.5438606108125*^9}, {3.543861975375*^9, 
+  3.54386198059375*^9}, {3.543866852546875*^9, 3.543866852984375*^9}, {
+  3.570205108734375*^9, 3.570205145546875*^9}, {3.570205229328125*^9, 
+  3.570205241828125*^9}, {3.570205343015625*^9, 3.5702053615625*^9}, {
+  3.57020539703125*^9, 3.570205425921875*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "The ordirary notation for multiplication in ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " is"
+}], "TextGroup",
+ CellChangeTimes->{{3.543840137609375*^9, 3.5438401896875*^9}, {
+  3.543861502765625*^9, 3.543861503296875*^9}, {3.5438615355625*^9, 
+  3.543861537390625*^9}, {3.543861799421875*^9, 3.543861841875*^9}, {
+  3.543866891140625*^9, 3.54386691521875*^9}, {3.5438692265625*^9, 
+  3.54386926746875*^9}, {3.5439896993125*^9, 3.543989737765625*^9}, {
+  3.54399082496875*^9, 3.543990829984375*^9}, {3.54399089478125*^9, 
+  3.543990905125*^9}}],
+
+Cell[TextData[{
+ StyleBox["A",
+  FontWeight->"Bold"],
+ "\[ThinSpace].\[ThinSpace]",
+ StyleBox["B",
+  FontWeight->"Bold"],
+ "\t\tmultiplication between matrices (\"dot\" multiplication)\n",
+ StyleBox["a",
+  FontWeight->"Bold"],
+ " \[Cross] ",
+ StyleBox["b",
+  FontWeight->"Bold"],
+ "\t\tcross-product between 3D vectors\n",
+ StyleBox["p",
+  FontSlant->"Italic"],
+ " ** ",
+ StyleBox["q",
+  FontSlant->"Italic"],
+ "\t\tquaternion multiplication (both in ",
+ StyleBox["Quat.m", "Output"],
+ " and ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " Quaternions package)"
+}], "Text",
+ CellMargins->{{48, 0}, {6, 8}},
+ CellChangeTimes->{{3.543840137609375*^9, 3.5438401896875*^9}, {
+   3.54386147809375*^9, 3.54386153278125*^9}, {3.543861564765625*^9, 
+   3.543861773921875*^9}, {3.54386687284375*^9, 3.5438668745625*^9}, {
+   3.5438684601875*^9, 3.54386846165625*^9}, {3.543902957984375*^9, 
+   3.543902959578125*^9}, {3.543903005890625*^9, 3.54390302571875*^9}, 
+   3.54398878521875*^9, {3.54398884975*^9, 3.543988850921875*^9}, {
+   3.543989030125*^9, 3.543989038015625*^9}, {3.543989484*^9, 
+   3.54398966403125*^9}, {3.543989798984375*^9, 3.543989830359375*^9}, {
+   3.54398986778125*^9, 3.5439898716875*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Beside the ordinary notation for multiplication, this document also \
+introduces the following notation based on the center dot (\[CenterDot]) \
+operator.\
+\>", "TextGroup",
+ CellChangeTimes->{{3.543840137609375*^9, 3.5438401896875*^9}, {
+  3.543861502765625*^9, 3.543861503296875*^9}, {3.5438615355625*^9, 
+  3.543861537390625*^9}, {3.543861799421875*^9, 3.543861841875*^9}, {
+  3.543866891140625*^9, 3.54386691521875*^9}, {3.5438692265625*^9, 
+  3.54386926746875*^9}, {3.5439896993125*^9, 3.543989707953125*^9}, {
+  3.543989740421875*^9, 3.543989784203125*^9}, {3.5439908335625*^9, 
+  3.543990884359375*^9}, {3.54416885146875*^9, 3.544168993359375*^9}}],
+
+Cell[TextData[{
+ StyleBox["A",
+  FontWeight->"Bold"],
+ "\[ThinSpace]\[CenterDot]\[ThinSpace]",
+ StyleBox["B",
+  FontWeight->"Bold"],
+ "\t\t",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{":=", " "}], TraditionalForm]]],
+ "multiplication between matrices\n",
+ StyleBox["p",
+  FontSlant->"Italic"],
+ " \[CenterDot] ",
+ StyleBox["q",
+  FontSlant->"Italic"],
+ "\t\t",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{":=", " "}], TraditionalForm]]],
+ "quaternion multiplication\n",
+ StyleBox["q",
+  FontSlant->"Italic"],
+ " \[CenterDot] ",
+ StyleBox["A",
+  FontWeight->"Bold"],
+ "\t\t",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{":=", " "}], TraditionalForm]]],
+ "column-wise quaternion-matrix multiplication"
+}], "Text",
+ CellMargins->{{48, 0}, {6, 8}},
+ CellChangeTimes->{{3.543840137609375*^9, 3.5438401896875*^9}, {
+   3.54386147809375*^9, 3.54386153278125*^9}, {3.543861564765625*^9, 
+   3.543861773921875*^9}, {3.54386687284375*^9, 3.5438668745625*^9}, {
+   3.5438684601875*^9, 3.54386846165625*^9}, {3.543902957984375*^9, 
+   3.543902959578125*^9}, {3.543903005890625*^9, 3.54390302571875*^9}, 
+   3.54398878521875*^9, {3.54398884975*^9, 3.543988850921875*^9}, {
+   3.543989030125*^9, 3.543989038015625*^9}, {3.543989484*^9, 
+   3.543989687921875*^9}, {3.543989793421875*^9, 3.5439897938125*^9}, {
+   3.5439898395625*^9, 3.543989978203125*^9}, {3.544169105265625*^9, 
+   3.54416915265625*^9}}],
+
+Cell[TextData[{
+ "Note that the center dot operator in ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " is without built-in meaning."
+}], "Text",
+ CellChangeTimes->{{3.54416900609375*^9, 3.54416908*^9}}]
+}, Open  ]],
+
+Cell["Matrix multiplication", "Subsubsection",
+ CellChangeTimes->{{3.543730884140625*^9, 3.543730886234375*^9}, {
+  3.54382181525*^9, 3.543821817390625*^9}, {3.543840228140625*^9, 
+  3.54384028334375*^9}, {3.54386001953125*^9, 3.54386002353125*^9}, {
+  3.5438606009375*^9, 3.5438606108125*^9}, {3.543866932609375*^9, 
+  3.54386693625*^9}, {3.543869188328125*^9, 3.54386919165625*^9}, {
+  3.543988699671875*^9, 3.5439887014375*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Define center dot operator ",
+ StyleBox["A",
+  FontWeight->"Bold"],
+ "\[ThinSpace]\[CenterDot]\[ThinSpace]",
+ StyleBox["B",
+  FontWeight->"Bold"],
+ " as matrix multiplication (otherwise, ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " uses plain dot \".\" for matrix multiplications)."
+}], "TextGroup",
+ CellChangeTimes->{{3.543840137609375*^9, 3.5438401896875*^9}, {
+  3.543861502765625*^9, 3.543861503296875*^9}, {3.5438615355625*^9, 
+  3.543861537390625*^9}, {3.543861799421875*^9, 3.543861841875*^9}, {
+  3.543866891140625*^9, 3.54386691521875*^9}, {3.5438692265625*^9, 
+  3.54386926746875*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"CenterDot", "[", " ", 
+   RowBox[{"m__", " ", "?", "MatrixQ"}], " ", "]"}], " ", ":=", " ", 
+  RowBox[{"Dot", "[", " ", "m", " ", "]"}]}]], "Input",
+ CellChangeTimes->{{3.54383954184375*^9, 3.543839584984375*^9}, {
+  3.543839811890625*^9, 3.543839827578125*^9}, {3.54383988040625*^9, 
+  3.54383990109375*^9}, {3.5438399705*^9, 3.543839972234375*^9}}]
+}, Open  ]],
+
+Cell["Quaternion multiplication", "Subsubsection",
+ CellChangeTimes->{{3.543730884140625*^9, 3.543730886234375*^9}, {
+  3.54382181525*^9, 3.543821817390625*^9}, {3.543840228140625*^9, 
+  3.54384028334375*^9}, {3.54386001953125*^9, 3.54386002353125*^9}, {
+  3.5438606009375*^9, 3.5438606108125*^9}, {3.543866932609375*^9, 
+  3.54386693625*^9}, {3.543869002546875*^9, 3.543869032484375*^9}, {
+  3.543869167578125*^9, 3.543869175625*^9}, {3.543988726453125*^9, 
+  3.543988727171875*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " uses non-commutative multiply (**) operator as symbol for quaternion \
+multiplication. The ",
+ StyleBox["Quat.m", "Output"],
+ " package and this document follow this convention. Here we define also the \
+center dot operator as symbol for quaternion multiplication, just for \
+convinience and esthetics"
+}], "TextGroup",
+ CellChangeTimes->{{3.543840137609375*^9, 3.5438401896875*^9}, {
+  3.543861502765625*^9, 3.543861503296875*^9}, {3.5438615355625*^9, 
+  3.543861537390625*^9}, {3.543861799421875*^9, 3.543861841875*^9}, {
+  3.543866891140625*^9, 3.54386691521875*^9}, {3.5438690600625*^9, 
+  3.543869155203125*^9}, {3.5438692006875*^9, 3.543869214109375*^9}, {
+  3.5439079985625*^9, 3.54390801603125*^9}, {3.54399092753125*^9, 
+  3.54399103990625*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"CenterDot", "[", " ", 
+   RowBox[{"q__", " ", "?", "\[ScriptCapitalQ]Q"}], " ", "]"}], " ", ":=", 
+  " ", 
+  RowBox[{"NonCommutativeMultiply", "[", " ", "q", " ", "]"}]}]], "Input",
+ CellChangeTimes->{{3.54383954184375*^9, 3.543839584984375*^9}, {
+  3.543839811890625*^9, 3.543839827578125*^9}, {3.54383988040625*^9, 
+  3.54383990109375*^9}, {3.5438399705*^9, 3.543839972234375*^9}, {
+  3.543988730859375*^9, 3.543988746515625*^9}}]
+}, Open  ]],
+
+Cell["Column-wise (or horizontal) quaternion-matrix multiplication", \
+"Subsubsection",
+ CellChangeTimes->{{3.543730884140625*^9, 3.54373090421875*^9}, {
+   3.543825197828125*^9, 3.54382520671875*^9}, {3.543825283828125*^9, 
+   3.54382530809375*^9}, {3.543860542078125*^9, 3.54386061940625*^9}, {
+   3.543866923328125*^9, 3.543866945515625*^9}, {3.543902967703125*^9, 
+   3.543903002640625*^9}, {3.54390389503125*^9, 3.54390389621875*^9}, 
+   3.5439886965625*^9, {3.570687370265625*^9, 3.570687416609375*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Let us now define multiplication between quaternion ",
+ StyleBox["q",
+  FontSlant->"Italic"],
+ " and matrix ",
+ StyleBox["M",
+  FontWeight->"Bold"],
+ ", where it is assumed that matrix is a row vector of quaternions in \
+columns, i.e. ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    StyleBox["M",
+     FontWeight->"Bold",
+     FontSlant->"Plain"], "=", 
+    RowBox[{"(", "\[NoBreak]", GridBox[{
+       {
+        SubscriptBox["q", "1"], 
+        SubscriptBox["q", "2"], "...", 
+        SubscriptBox["q", "n"]}
+      }], "\[NoBreak]", ")"}]}], TraditionalForm]]],
+ ", so that quaternion multiplication is done between ",
+ StyleBox["q",
+  FontSlant->"Italic"],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["q", "j"], TraditionalForm]]],
+ " in every column ",
+ StyleBox["j",
+  FontSlant->"Italic"],
+ ". "
+}], "TextGroup",
+ CellChangeTimes->{{3.543826975203125*^9, 3.543827353140625*^9}, {
+   3.543860649046875*^9, 3.543860711515625*^9}, {3.5438609270625*^9, 
+   3.54386115596875*^9}, 3.543866569765625*^9, {3.543866958265625*^9, 
+   3.543867135296875*^9}, {3.543868498875*^9, 3.543868561359375*^9}, 
+   3.5439080494375*^9, 3.54398878521875*^9, {3.54398895*^9, 
+   3.543988961765625*^9}, {3.54399105015625*^9, 3.543991069453125*^9}}],
+
+Cell[BoxData[
+ GraphicsBox[{
+   StyleBox[InsetBox[
+     TagBox[
+      RowBox[{
+       RowBox[{"q", " ", "\[CenterDot]", " ", 
+        RowBox[{"(", "\[NoBreak]", GridBox[{
+           {
+            SubscriptBox["q", "11"], 
+            SubscriptBox["q", "12"], " ", 
+            SubscriptBox["q", 
+             RowBox[{"1", "\[NegativeVeryThinSpace]", "n"}]]},
+           {
+            SubscriptBox["q", "21"], 
+            SubscriptBox["q", "22"], " ", 
+            SubscriptBox["q", 
+             RowBox[{"2", "\[NegativeVeryThinSpace]", "n"}]]},
+           {
+            SubscriptBox["q", "31"], 
+            SubscriptBox["q", "32"], 
+            RowBox[{"...", " "}], 
+            SubscriptBox["q", 
+             RowBox[{"3", "\[NegativeVeryThinSpace]", "n"}]]},
+           {
+            SubscriptBox["q", "41"], 
+            SubscriptBox["q", "42"], " ", 
+            SubscriptBox["q", 
+             RowBox[{"4", "\[NegativeVeryThinSpace]", "n"}]]}
+          },
+          
+          GridBoxDividers->{
+           "ColumnsIndexed" -> {2 -> True}, "RowsIndexed" -> {2 -> True}}], 
+         "\[NoBreak]", ")"}]}], "   ", ":=", "   ", 
+       RowBox[{"(", "\[NoBreak]", GridBox[{
+          {
+           SubscriptBox[
+            OverscriptBox["q", "_"], "11"], 
+           SubscriptBox[
+            OverscriptBox["q", "_"], "12"], " ", 
+           SubscriptBox[
+            OverscriptBox["q", "_"], 
+            RowBox[{"1", "\[NegativeVeryThinSpace]", "n"}]]},
+          {
+           SubscriptBox[
+            OverscriptBox["q", "_"], "21"], 
+           SubscriptBox[
+            OverscriptBox["q", "_"], "22"], " ", 
+           SubscriptBox[
+            OverscriptBox["q", "_"], 
+            RowBox[{"2", "\[NegativeVeryThinSpace]", "n"}]]},
+          {
+           SubscriptBox[
+            OverscriptBox["q", "_"], "31"], 
+           SubscriptBox[
+            OverscriptBox["q", "_"], "32"], 
+           RowBox[{"...", " "}], 
+           SubscriptBox[
+            OverscriptBox["q", "_"], 
+            RowBox[{"3", "\[NegativeVeryThinSpace]", "n"}]]},
+          {
+           SubscriptBox[
+            OverscriptBox["q", "_"], "41"], 
+           SubscriptBox[
+            OverscriptBox["q", "_"], "42"], " ", 
+           SubscriptBox[
+            OverscriptBox["q", "_"], 
+            RowBox[{"4", "\[NegativeVeryThinSpace]", "n"}]]}
+         },
+         GridBoxDividers->{
+          "ColumnsIndexed" -> {2 -> True}, "RowsIndexed" -> {2 -> True}}], 
+        "\[NoBreak]", ")"}]}],
+      HoldForm], {0.06468614058906638, 0.3736602209944757}, {-1., 0.}],
+    FontFamily->"Times New Roman",
+    FontSize->14], 
+   {Arrowheads[0.019999999999999993`], 
+    ArrowBox[{{0.5763939599512937, 0.8062590381549205}, {0.5763939599512937, 
+     0.6736623530720477}}]}, 
+   {Arrowheads[0.019999999999999993`], 
+    ArrowBox[{{0.693195158117339, 0.8062590381549205}, {0.693195158117339, 
+     0.6736623530720477}}]}, 
+   {Arrowheads[0.019999999999999993`], 
+    ArrowBox[{{0.8160799627464979, 0.8062590381549205}, {0.8160799627464979, 
+     0.6736623530720477}}]}, 
+   {Arrowheads[0.019999999999999993`], 
+    StyleBox[InsetBox[
+      SubscriptBox["q", 
+       "1"], {0.1445365255031854, 0.9128258370721958}, {-1., 0.}],
+     FontFamily->"Times New Roman",
+     FontSize->14]}, 
+   {Arrowheads[0.019999999999999993`], 
+    StyleBox[InsetBox[
+      RowBox[{
+       TagBox["q",
+        HoldForm], " ", 
+       SubscriptBox["q", 
+        "n"]}], {0.8129303078866051, 0.906114427676223}, {-1., 0.}],
+     FontFamily->"Times New Roman",
+     FontSize->14]}, 
+   {Arrowheads[0.019999999999999993`], 
+    StyleBox[InsetBox[
+      RowBox[{
+       TagBox[
+        RowBox[{
+         SubscriptBox[
+          OverscriptBox["q", "_"], "j"], "=", "q"}],
+        HoldForm], " ", 
+       SubscriptBox["q", 
+        "j"]}], {0.6341738312026673, 0.8994030182802497}, {-1., 0.}],
+     FontFamily->"Times New Roman",
+     FontSize->14]}, 
+   {Arrowheads[0.019999999999999993`], 
+    StyleBox[InsetBox[
+      SubscriptBox["q", 
+       "n"], {0.3759700315480905, 0.9128258370721962}, {-1., 0.}],
+     FontFamily->"Times New Roman",
+     FontSize->14]}, 
+   {Arrowheads[0.019999999999999993`], 
+    StyleBox[InsetBox[
+      SubscriptBox["q", 
+       "j"], {0.2533448156586259, 0.9128258370721962}, {-1., 0.}],
+     FontFamily->"Times New Roman",
+     FontSize->14]}, 
+   {Arrowheads[0.019999999999999993`], 
+    StyleBox[InsetBox[
+      RowBox[{"q", " ", 
+       SubscriptBox["q", 
+        "1"]}], {0.5331375617726155, 0.9128258370721962}, {-1., 0.}],
+     FontFamily->"Times New Roman",
+     FontSize->14]}, {
+    {Arrowheads[0.019999999999999993`], 
+     ArrowBox[{{0.16188618793056836`, 0.7928362193629744}, {
+      0.16188618793056836`, 0.6602395342801016}}]}, 
+    {Arrowheads[0.019999999999999993`], 
+     ArrowBox[{{0.25278065034531827`, 0.7928362193629744}, {
+      0.25278065034531827`, 0.6602395342801016}}]}, 
+    {Arrowheads[0.019999999999999993`], 
+     ArrowBox[{{0.3886188228501248, 0.7928362193629744}, {0.3886188228501248, 
+      0.6602395342801016}}]}}},
+  AspectRatio->Full,
+  ImageSize->{386., 149.},
+  PlotRange->{{0, 1}, {0, 1}}]], "DisplayFormula",
+ CellChangeTimes->{{3.543826975203125*^9, 3.543827355359375*^9}, {
+   3.543847731796875*^9, 3.54384778521875*^9}, {3.543860728625*^9, 
+   3.54386091259375*^9}, {3.543861165078125*^9, 3.543861240546875*^9}, {
+   3.543867142875*^9, 3.5438671978125*^9}, {3.5438672490625*^9, 
+   3.543867265296875*^9}, {3.54390306121875*^9, 3.54390346265625*^9}, {
+   3.543903492890625*^9, 3.543903765765625*^9}, {3.543903796234375*^9, 
+   3.543903825828125*^9}, {3.543904037734375*^9, 3.543904059359375*^9}, {
+   3.54390738615625*^9, 3.54390740596875*^9}, {3.543908071859375*^9, 
+   3.543908083609375*^9}, 3.543988785234375*^9, {3.570686925328125*^9, 
+   3.570687058671875*^9}, {3.570687093875*^9, 3.570687340125*^9}, {
+   3.5706882258125*^9, 3.5706882554375*^9}, {3.570688299984375*^9, 
+   3.57068830190625*^9}}]
+}, Open  ]],
+
+Cell["\<\
+Since the quaternion multiplication is not commutative, there are several \
+cases to distinguish:\
+\>", "TextGroup",
+ CellChangeTimes->{{3.543826975203125*^9, 3.543827355359375*^9}, {
+   3.543847731796875*^9, 3.54384778521875*^9}, {3.543860728625*^9, 
+   3.54386091259375*^9}, {3.543861165078125*^9, 3.543861240546875*^9}, {
+   3.543867142875*^9, 3.5438671978125*^9}, {3.5438672490625*^9, 
+   3.543867265296875*^9}, 3.543907454046875*^9, {3.543908051671875*^9, 
+   3.5439080539375*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "a) Left multiplication ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"q", "\[CenterDot]", 
+    StyleBox["M",
+     FontWeight->"Bold",
+     FontSlant->"Plain"]}], TraditionalForm]]],
+ ", where a quaternion in each column in ",
+ StyleBox["M",
+  FontWeight->"Bold"],
+ " is multiplied by the quaternion ",
+ StyleBox["q",
+  FontSlant->"Italic"],
+ " from the left:"
+}], "TextGroup",
+ CellChangeTimes->{{3.543826975203125*^9, 3.543827355359375*^9}, {
+   3.543847731796875*^9, 3.54384778521875*^9}, {3.543860728625*^9, 
+   3.54386091259375*^9}, {3.543861165078125*^9, 3.543861240546875*^9}, {
+   3.543867142875*^9, 3.5438671978125*^9}, {3.5438672490625*^9, 
+   3.543867265296875*^9}, 3.543907454046875*^9, {3.543908051671875*^9, 
+   3.5439080539375*^9}, {3.543988785265625*^9, 3.543988785265625*^9}, {
+   3.543989025015625*^9, 3.54398902553125*^9}, {3.570206836890625*^9, 
+   3.57020689534375*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"CenterDot", "[", " ", 
+   RowBox[{
+    RowBox[{"q_", "?", "\[ScriptCapitalQ]Q"}], ",", 
+    RowBox[{"mat_", "?", "MatrixQ"}]}], " ", "]"}], ":=", 
+  RowBox[{"Transpose", "@", "\[IndentingNewLine]", 
+   RowBox[{"Table", "[", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"ToList", "[", " ", 
+      RowBox[{"q", " ", "\[CenterDot]", " ", 
+       RowBox[{"To\[ScriptCapitalQ]", "@", 
+        SubscriptBox["mat", 
+         RowBox[{"\[LeftDoubleBracket]", 
+          RowBox[{"All", ",", "j"}], "\[RightDoubleBracket]"}]]}]}], " ", 
+      "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"j", ",", "1", ",", 
+       SubscriptBox[
+        RowBox[{"Dimensions", "[", "mat", "]"}], 
+        RowBox[{"\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]]}], 
+      "}"}]}], "\[IndentingNewLine]", "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.543731346828125*^9, 3.54373137975*^9}, {
+  3.543815477140625*^9, 3.543815479421875*^9}, {3.54381753978125*^9, 
+  3.543817541609375*^9}, {3.54381758840625*^9, 3.543817594296875*^9}, {
+  3.54382807578125*^9, 3.54382817634375*^9}, {3.543828221609375*^9, 
+  3.543828237875*^9}, {3.543926575328125*^9, 3.5439265768125*^9}, {
+  3.5439887541875*^9, 3.543988755359375*^9}, {3.5439888285625*^9, 
+  3.543988829265625*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "b) Right multiplication ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    StyleBox["M",
+     FontWeight->"Bold",
+     FontSlant->"Plain"], "\[CenterDot]", "q"}], TraditionalForm]]],
+ ", where a quaternion in each column in ",
+ StyleBox["M",
+  FontWeight->"Bold"],
+ " is multiplied by the quaternion ",
+ StyleBox["q",
+  FontSlant->"Italic"],
+ " from the right:"
+}], "TextGroup",
+ CellChangeTimes->{{3.543826975203125*^9, 3.543827355359375*^9}, {
+   3.543847731796875*^9, 3.54384778521875*^9}, {3.543860728625*^9, 
+   3.543860913359375*^9}, {3.5438611893125*^9, 3.54386119053125*^9}, {
+   3.543861227859375*^9, 3.5438612361875*^9}, {3.5438671465*^9, 
+   3.54386716046875*^9}, {3.543867203625*^9, 3.5438672345625*^9}, 
+   3.543907452390625*^9, {3.543988785265625*^9, 3.543988785265625*^9}, {
+   3.5439890225*^9, 3.543989023015625*^9}, {3.5702068883125*^9, 
+   3.570206892640625*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"CenterDot", "[", " ", 
+   RowBox[{
+    RowBox[{"mat_", "?", "MatrixQ"}], ",", 
+    RowBox[{"q_", "?", "\[ScriptCapitalQ]Q"}]}], " ", "]"}], ":=", 
+  RowBox[{"Transpose", "@", "\[IndentingNewLine]", 
+   RowBox[{"Table", "[", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"ToList", "[", " ", 
+      RowBox[{
+       RowBox[{"To\[ScriptCapitalQ]", "@", 
+        SubscriptBox["mat", 
+         RowBox[{"\[LeftDoubleBracket]", 
+          RowBox[{"All", ",", "j"}], "\[RightDoubleBracket]"}]]}], " ", 
+       "\[CenterDot]", " ", "q"}], " ", "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"j", ",", "1", ",", 
+       SubscriptBox[
+        RowBox[{"Dimensions", "[", "mat", "]"}], 
+        RowBox[{"\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]]}], 
+      "}"}]}], "\[IndentingNewLine]", "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.543731346828125*^9, 3.543731385796875*^9}, {
+   3.54381548059375*^9, 3.543815482859375*^9}, {3.543817543296875*^9, 
+   3.543817544671875*^9}, {3.543817578234375*^9, 3.543817586578125*^9}, {
+   3.543828110484375*^9, 3.543828116296875*^9}, {3.54382814703125*^9, 
+   3.543828179734375*^9}, {3.54382824078125*^9, 3.543828242421875*^9}, 
+   3.543988759125*^9, {3.543988831703125*^9, 3.543988832171875*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "c) Compound multiplication from both sides ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"p", "\[CenterDot]", 
+    StyleBox["M",
+     FontWeight->"Bold",
+     FontSlant->"Plain"], "\[CenterDot]", "q"}], TraditionalForm]]],
+ ", where multiplication of each column in M by the quaternion ",
+ StyleBox["p",
+  FontSlant->"Italic"],
+ " from the left and ",
+ StyleBox["q",
+  FontSlant->"Italic"],
+ " from the right:"
+}], "TextGroup",
+ CellChangeTimes->{{3.543826975203125*^9, 3.543827355359375*^9}, {
+   3.543847731796875*^9, 3.54384778521875*^9}, {3.543860728625*^9, 
+   3.543860913359375*^9}, 3.543861197078125*^9, {3.543861243921875*^9, 
+   3.54386125496875*^9}, 3.54386657309375*^9, {3.54386714946875*^9, 
+   3.5438671616875*^9}, 3.54390745590625*^9, {3.543988785265625*^9, 
+   3.543988785265625*^9}, {3.543989016390625*^9, 3.543989019328125*^9}, {
+   3.5702069056875*^9, 3.570206905984375*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"CenterDot", "[", " ", 
+   RowBox[{
+    RowBox[{"q1_", "?", "\[ScriptCapitalQ]Q"}], ",", 
+    RowBox[{"mat_", "?", "MatrixQ"}], ",", 
+    RowBox[{"q2_", "?", "\[ScriptCapitalQ]Q"}]}], " ", "]"}], ":=", 
+  RowBox[{"Transpose", "@", "\[IndentingNewLine]", 
+   RowBox[{"Table", "[", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"ToList", "[", " ", 
+      RowBox[{"q1", " ", "\[CenterDot]", " ", 
+       RowBox[{"To\[ScriptCapitalQ]", "@", 
+        SubscriptBox["mat", 
+         RowBox[{"\[LeftDoubleBracket]", 
+          RowBox[{"All", ",", "j"}], "\[RightDoubleBracket]"}]]}], " ", 
+       "\[CenterDot]", " ", "q2"}], " ", "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"j", ",", "1", ",", 
+       SubscriptBox[
+        RowBox[{"Dimensions", "[", "mat", "]"}], 
+        RowBox[{"\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]]}], 
+      "}"}]}], "\[IndentingNewLine]", "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.543731346828125*^9, 3.543731385796875*^9}, {
+   3.54381548059375*^9, 3.543815482859375*^9}, {3.543817547046875*^9, 
+   3.54381757565625*^9}, {3.543818782203125*^9, 3.54381878309375*^9}, {
+   3.543828130015625*^9, 3.5438281439375*^9}, {3.543828181515625*^9, 
+   3.543828189703125*^9}, {3.543828244875*^9, 3.54382824665625*^9}, 
+   3.54382831753125*^9, {3.543830252546875*^9, 3.543830283328125*^9}, 
+   3.543830412640625*^9, 3.54398876153125*^9, {3.5439888333125*^9, 
+   3.543988834953125*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+The multiplication between a quaternion and a matrix is associative, i.e. it \
+holds:\
+\>", "TextGroup",
+ CellChangeTimes->{{3.543826975203125*^9, 3.54382735121875*^9}, {
+   3.543847800625*^9, 3.543847819609375*^9}, {3.54386125928125*^9, 
+   3.543861449*^9}, 3.543866575390625*^9, {3.5438673040625*^9, 
+   3.543867304640625*^9}, {3.570206911875*^9, 3.570206914265625*^9}, 
+   3.57020694928125*^9}],
+
+Cell[TextData[{
+ "      ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{
+     SubscriptBox["q", "1"], "\[CenterDot]", 
+     StyleBox["M",
+      FontWeight->"Bold",
+      FontSlant->"Plain"], "\[CenterDot]", 
+     SubscriptBox["q", "2"]}], "\[Equal]", 
+    RowBox[{
+     SubscriptBox["q", "1"], "\[CenterDot]", 
+     RowBox[{"(", 
+      RowBox[{
+       StyleBox["M",
+        FontWeight->"Bold",
+        FontSlant->"Plain"], "\[CenterDot]", 
+       SubscriptBox["q", "2"]}], ")"}]}], "\[Equal]", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       SubscriptBox["q", "1"], "\[CenterDot]", 
+       StyleBox["M",
+        FontWeight->"Bold",
+        FontSlant->"Plain"]}], ")"}], "\[CenterDot]", 
+     SubscriptBox["q", "2"]}]}], TraditionalForm]]]
+}], "Text",
+ CellChangeTimes->{{3.543826975203125*^9, 3.54382735121875*^9}, {
+   3.543847800625*^9, 3.543847819609375*^9}, {3.54386125928125*^9, 
+   3.543861449*^9}, 3.543866575390625*^9, {3.5438673040625*^9, 
+   3.543867312015625*^9}, 3.5438700348125*^9, {3.54398878528125*^9, 
+   3.543988785296875*^9}}],
+
+Cell["which is proved as a theorem in the following sections.", "Text",
+ CellChangeTimes->{{3.543826975203125*^9, 3.54382735121875*^9}, {
+   3.543847800625*^9, 3.543847819609375*^9}, {3.54386125928125*^9, 
+   3.543861449*^9}, 3.543866575390625*^9, {3.5438673040625*^9, 
+   3.54386730790625*^9}, {3.54387004571875*^9, 3.543870047375*^9}, {
+   3.570206919109375*^9, 3.5702069191875*^9}}],
+
+Cell[TextData[{
+ "Note that for a single column matrix ",
+ StyleBox["M",
+  FontWeight->"Bold"],
+ ", the multiplication between a quaternion and a matrix falls back to an \
+ordinary quaternion multiplication."
+}], "Text",
+ CellChangeTimes->{{3.543826975203125*^9, 3.54382735121875*^9}, {
+  3.543847800625*^9, 3.543847819609375*^9}, {3.54386125928125*^9, 
+  3.543861459921875*^9}, {3.5438637658125*^9, 3.54386386553125*^9}, {
+  3.57020692965625*^9, 3.570206933125*^9}}]
+}, Open  ]],
+
+Cell["Row-wise (or vertical) quaternion-matrix multiplication", \
+"Subsubsection",
+ CellChangeTimes->{{3.543730884140625*^9, 3.54373090421875*^9}, {
+   3.543825197828125*^9, 3.54382520671875*^9}, {3.543825283828125*^9, 
+   3.54382530809375*^9}, {3.543860542078125*^9, 3.54386061940625*^9}, {
+   3.543866923328125*^9, 3.543866945515625*^9}, {3.543902967703125*^9, 
+   3.543902994640625*^9}, {3.543903891796875*^9, 3.543903892640625*^9}, 
+   3.54398833921875*^9, {3.57068734996875*^9, 3.570687363609375*^9}, {
+   3.570687395703125*^9, 3.5706874196875*^9}, {3.570688129328125*^9, 
+   3.570688141203125*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Row-wise quaternion-matrix multiplication can be defined by transposing \
+matrices and using column-wise multiplication:\
+\>", "TextGroup",
+ CellChangeTimes->{{3.543826975203125*^9, 3.54382735121875*^9}, {
+  3.543847800625*^9, 3.543847819609375*^9}, {3.54386125928125*^9, 
+  3.543861459921875*^9}, {3.5438637658125*^9, 3.54386386553125*^9}, {
+  3.54390387759375*^9, 3.543903946625*^9}, {3.54390399921875*^9, 
+  3.543903999453125*^9}, {3.5439894048125*^9, 3.5439894486875*^9}, {
+  3.57020694371875*^9, 3.570206946671875*^9}}],
+
+Cell[TextData[{
+ "      ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox[
+    RowBox[{"(", " ", 
+     RowBox[{
+      SubscriptBox["q", "1"], "\[CenterDot]", 
+      StyleBox[
+       SuperscriptBox[
+        StyleBox["M",
+         FontWeight->"Bold",
+         FontSlant->"Plain"], 
+        StyleBox["\[Transpose]",
+         FontWeight->"Plain",
+         FontSlant->"Plain"]],
+       FontWeight->"Bold",
+       FontSlant->"Plain"], "\[CenterDot]", 
+      SubscriptBox["q", "2"]}], " ", ")"}], "\[Transpose]"], 
+   TraditionalForm]]]
+}], "Text",
+ CellChangeTimes->{{3.543826975203125*^9, 3.54382735121875*^9}, {
+   3.543847800625*^9, 3.543847819609375*^9}, {3.54386125928125*^9, 
+   3.543861449*^9}, 3.543866575390625*^9, {3.5438673040625*^9, 
+   3.543867312015625*^9}, 3.5438700348125*^9, {3.543903921578125*^9, 
+   3.543903987921875*^9}, {3.543988785296875*^9, 3.543988785296875*^9}}]
+}, Open  ]],
+
+Cell["Conj[] matrix operator", "Subsubsection",
+ CellChangeTimes->{{3.543730884140625*^9, 3.54373090421875*^9}, {
+  3.543825197828125*^9, 3.54382520671875*^9}, {3.543825283828125*^9, 
+  3.54382530809375*^9}, {3.543860532625*^9, 3.543860535421875*^9}, {
+  3.543862368640625*^9, 3.54386237334375*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Conj[] operator conjugates only the vector part of the matrix, but not the \
+scalar and the cross product parts:\
+\>", "TextGroup",
+ CellChangeTimes->{{3.543826975203125*^9, 3.543827018375*^9}, {
+  3.543827365671875*^9, 3.543827438203125*^9}, {3.543862085078125*^9, 
+  3.54386209853125*^9}, {3.543862193171875*^9, 3.54386219484375*^9}, {
+  3.543862383859375*^9, 3.54386243865625*^9}, {3.543874014765625*^9, 
+  3.543874021265625*^9}, {3.543907437078125*^9, 3.543907447578125*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Conj", "[", " ", 
+   RowBox[{"q_", "?", "MatrixQ"}], " ", "]"}], ":=", "\[IndentingNewLine]", 
+  RowBox[{"(", "\[NoBreak]", GridBox[{
+     {
+      SubscriptBox["q", 
+       RowBox[{"\[LeftDoubleBracket]", 
+        RowBox[{"1", ",", "1"}], "\[RightDoubleBracket]"}]], 
+      RowBox[{"-", 
+       SubscriptBox["q", 
+        RowBox[{"\[LeftDoubleBracket]", 
+         RowBox[{"1", ",", "2"}], "\[RightDoubleBracket]"}]]}], 
+      RowBox[{"-", 
+       SubscriptBox["q", 
+        RowBox[{"\[LeftDoubleBracket]", 
+         RowBox[{"1", ",", "3"}], "\[RightDoubleBracket]"}]]}], 
+      RowBox[{"-", 
+       SubscriptBox["q", 
+        RowBox[{"\[LeftDoubleBracket]", 
+         RowBox[{"1", ",", "4"}], "\[RightDoubleBracket]"}]]}]},
+     {
+      RowBox[{"-", 
+       SubscriptBox["q", 
+        RowBox[{"\[LeftDoubleBracket]", 
+         RowBox[{"2", ",", "1"}], "\[RightDoubleBracket]"}]]}], 
+      SubscriptBox["q", 
+       RowBox[{"\[LeftDoubleBracket]", 
+        RowBox[{"2", ",", "2"}], "\[RightDoubleBracket]"}]], 
+      SubscriptBox["q", 
+       RowBox[{"\[LeftDoubleBracket]", 
+        RowBox[{"2", ",", "3"}], "\[RightDoubleBracket]"}]], 
+      SubscriptBox["q", 
+       RowBox[{"\[LeftDoubleBracket]", 
+        RowBox[{"2", ",", "4"}], "\[RightDoubleBracket]"}]]},
+     {
+      RowBox[{"-", 
+       SubscriptBox["q", 
+        RowBox[{"\[LeftDoubleBracket]", 
+         RowBox[{"3", ",", "1"}], "\[RightDoubleBracket]"}]]}], 
+      SubscriptBox["q", 
+       RowBox[{"\[LeftDoubleBracket]", 
+        RowBox[{"3", ",", "2"}], "\[RightDoubleBracket]"}]], 
+      SubscriptBox["q", 
+       RowBox[{"\[LeftDoubleBracket]", 
+        RowBox[{"3", ",", "3"}], "\[RightDoubleBracket]"}]], 
+      SubscriptBox["q", 
+       RowBox[{"\[LeftDoubleBracket]", 
+        RowBox[{"3", ",", "4"}], "\[RightDoubleBracket]"}]]},
+     {
+      RowBox[{"-", 
+       SubscriptBox["q", 
+        RowBox[{"\[LeftDoubleBracket]", 
+         RowBox[{"4", ",", "1"}], "\[RightDoubleBracket]"}]]}], 
+      SubscriptBox["q", 
+       RowBox[{"\[LeftDoubleBracket]", 
+        RowBox[{"4", ",", "2"}], "\[RightDoubleBracket]"}]], 
+      SubscriptBox["q", 
+       RowBox[{"\[LeftDoubleBracket]", 
+        RowBox[{"4", ",", "3"}], "\[RightDoubleBracket]"}]], 
+      SubscriptBox["q", 
+       RowBox[{"\[LeftDoubleBracket]", 
+        RowBox[{"4", ",", "4"}], "\[RightDoubleBracket]"}]]}
+    },
+    GridBoxDividers->{
+     "ColumnsIndexed" -> {2 -> True}, "RowsIndexed" -> {2 -> True}}], 
+   "\[NoBreak]", ")"}]}]], "Input",
+ CellChangeTimes->{{3.543731135046875*^9, 3.54373124921875*^9}, {
+   3.543815496796875*^9, 3.543815501921875*^9}, {3.543815558046875*^9, 
+   3.543815591703125*^9}, {3.54382838546875*^9, 3.543828415078125*^9}, 
+   3.54382846775*^9, {3.54382881446875*^9, 3.543828893765625*^9}, {
+   3.543847871203125*^9, 3.5438479610625*^9}}],
+
+Cell[TextData[{
+ "Note that Conj[] is ",
+ StyleBox["not",
+  FontWeight->"Bold"],
+ " a conjugate of a quaternion! The conjugate of a quaternion corresponds to \
+the plain transpose of the matrix."
+}], "Text",
+ CellChangeTimes->{{3.543826975203125*^9, 3.543827018375*^9}, {
+  3.543827365671875*^9, 3.543827438203125*^9}, {3.543862085078125*^9, 
+  3.54386213203125*^9}, {3.5438621634375*^9, 3.543862255859375*^9}, {
+  3.54386229490625*^9, 3.5438623454375*^9}, {3.543874029140625*^9, 
+  3.5438740298125*^9}}]
+}, Open  ]],
+
+Cell["Idea behind quaternion-matrix multiplication", "Subsubsection",
+ CellChangeTimes->{{3.543822619078125*^9, 3.54382264215625*^9}, {
+  3.54382301678125*^9, 3.543823025015625*^9}, {3.543823066125*^9, 
+  3.543823069890625*^9}, {3.543824185375*^9, 3.543824187703125*^9}, {
+  3.543863872953125*^9, 3.54386387825*^9}, {3.543867352828125*^9, 
+  3.543867370328125*^9}, {3.5438693886875*^9, 3.54386941221875*^9}, {
+  3.5702055800625*^9, 3.570205612515625*^9}, {3.570205645390625*^9, 
+  3.57020564821875*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Basic idea behind the quaternion-matrix multiplication comes from an \
+expression:\
+\>", "TextGroup",
+ CellChangeTimes->{{3.54386941471875*^9, 3.543869433390625*^9}, {
+  3.543904080578125*^9, 3.543904081703125*^9}, {3.570206971515625*^9, 
+  3.57020699671875*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Assert", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"\[ScriptCapitalQ]", "[", " ", 
+     RowBox[{"1", ",", " ", "0", ",", " ", "0", ",", " ", "0"}], " ", "]"}], 
+    " ", "\[Equal]", " ", 
+    RowBox[{"q", "\[CenterDot]", 
+     RowBox[{"\[ScriptCapitalQ]", "[", " ", 
+      RowBox[{"1", ",", " ", "0", ",", " ", "0", ",", " ", "0"}], " ", "]"}], 
+     "\[CenterDot]", 
+     SuperscriptBox["q", "*"]}]}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Assumptions", "\[Rule]", 
+    RowBox[{
+     SuperscriptBox[
+      RowBox[{"\[LeftBracketingBar]", "q", "\[RightBracketingBar]"}], "2"], 
+     "\[Equal]", "1"}]}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.5438226441875*^9, 3.543822694015625*^9}, {
+   3.5438227886875*^9, 3.543822808421875*^9}, {3.543822958078125*^9, 
+   3.54382300265625*^9}, {3.54382372259375*^9, 3.543823722828125*^9}, {
+   3.54382393096875*^9, 3.543823947234375*^9}, {3.543823990296875*^9, 
+   3.54382403809375*^9}, {3.543824130078125*^9, 3.543824154625*^9}, 
+   3.543825890171875*^9, {3.543832151703125*^9, 3.54383215234375*^9}, 
+   3.543859795890625*^9, {3.543863886765625*^9, 3.54386388834375*^9}, {
+   3.543867347015625*^9, 3.5438673475625*^9}, {3.543988835875*^9, 
+   3.543988838265625*^9}, {3.54398904853125*^9, 3.54398905190625*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.54418638534375*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "for which it is assumed to be also valid when transforming identity matrix \
+",
+ StyleBox["I4",
+  FontWeight->"Bold"],
+ " that is equvalent representation of the quaternion \[ScriptCapitalQ][ 1, \
+0, 0, 0 ] in matrix form, i.e. that there should be kind of multiplication \
+where:"
+}], "TextGroup",
+ CellChangeTimes->{{3.543819821359375*^9, 3.543819860765625*^9}, {
+   3.543822056515625*^9, 3.543822062359375*^9}, {3.54382419021875*^9, 
+   3.543824235421875*^9}, {3.543839694046875*^9, 3.543839695953125*^9}, {
+   3.543863896171875*^9, 3.54386391578125*^9}, {3.54386735653125*^9, 
+   3.54386735725*^9}, {3.543867417203125*^9, 3.54386746853125*^9}, {
+   3.543904088765625*^9, 3.543904095390625*^9}, 3.5439887853125*^9, {
+   3.5439890599375*^9, 3.54398907325*^9}, {3.570207005*^9, 
+   3.570207015828125*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Assert", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    SuperscriptBox[
+     RowBox[{"(", "\[NoBreak]", GridBox[{
+        {"1", "0", "0", "0"}
+       }], "\[NoBreak]", ")"}], "\[Transpose]"], " ", "\[Equal]", " ", 
+    RowBox[{"q", " ", "\[CenterDot]", " ", 
+     SuperscriptBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+         {"1", "0", "0", "0"}
+        }], "\[NoBreak]", ")"}], "\[Transpose]"], " ", "\[CenterDot]", " ", 
+     SuperscriptBox["q", "*"]}]}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Assumptions", "\[Rule]", 
+    RowBox[{
+     SuperscriptBox[
+      RowBox[{"\[LeftBracketingBar]", "q", "\[RightBracketingBar]"}], "2"], 
+     "\[Equal]", "1"}]}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.5438226441875*^9, 3.543822694015625*^9}, {
+   3.5438227886875*^9, 3.543822808421875*^9}, {3.543822958078125*^9, 
+   3.54382300265625*^9}, {3.54382372259375*^9, 3.543823722828125*^9}, {
+   3.54382393096875*^9, 3.543823947234375*^9}, {3.543823990296875*^9, 
+   3.54382403809375*^9}, {3.543824130078125*^9, 3.543824154625*^9}, 
+   3.543825890171875*^9, {3.543832151703125*^9, 3.54383215234375*^9}, 
+   3.543859795890625*^9, {3.543863886765625*^9, 3.54386388834375*^9}, {
+   3.54386392340625*^9, 3.543864002796875*^9}, {3.5439887853125*^9, 
+   3.5439887853125*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186385375*^9}]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Theorems", "Section",
+ CellChangeTimes->{{3.54358240825*^9, 3.54358241065625*^9}, {
+  3.543816420671875*^9, 3.543816423890625*^9}, {3.5438252115*^9, 
+  3.543825273703125*^9}, {3.543826542578125*^9, 3.543826553796875*^9}, {
+  3.543862852734375*^9, 3.543862853703125*^9}}],
+
+Cell["Quaternion-matrix multiplication", "Subsubsection",
+ CellChangeTimes->{{3.543730884140625*^9, 3.54373090421875*^9}, {
+   3.5438164938125*^9, 3.543816498296875*^9}, {3.543817693359375*^9, 
+   3.54381770684375*^9}, {3.5438251899375*^9, 3.543825191625*^9}, {
+   3.543829767375*^9, 3.54382976878125*^9}, {3.543862858375*^9, 
+   3.543862864125*^9}, 3.543866589953125*^9}],
+
+Cell[CellGroupData[{
+
+Cell["Quaternion multiplication associativity (sanity-check):", "TextGroup",
+ PageBreakBelow->False,
+ CellChangeTimes->{{3.543870055921875*^9, 3.543870080734375*^9}, 
+   3.57020701896875*^9}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"q1", "\[CenterDot]", "q", "\[CenterDot]", "q2"}], " ", "\[Equal]",
+    " ", 
+   RowBox[{"q1", "\[CenterDot]", 
+    RowBox[{"(", " ", 
+     RowBox[{"q", "\[CenterDot]", "q2"}], ")"}]}], " ", "\[Equal]", " ", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"q1", "\[CenterDot]", "q"}], ")"}], "\[CenterDot]", "q2"}]}], 
+  " ", "//", "Assert"}]], "Input",
+ CellChangeTimes->{{3.543830009515625*^9, 3.54383003096875*^9}, {
+   3.543831794046875*^9, 3.543831796625*^9}, {3.54384823703125*^9, 
+   3.543848239453125*^9}, 3.543859791921875*^9, {3.543988839390625*^9, 
+   3.543988845859375*^9}, {3.543989079984375*^9, 3.543989090984375*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.54418638565625*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Quaternion-matrix multiplication associativity theorems:", "TextGroup",
+ CellChangeTimes->{{3.543870055921875*^9, 3.543870092828125*^9}, {
+   3.543870133484375*^9, 3.543870136078125*^9}, {3.570205674234375*^9, 
+   3.57020567515625*^9}, 3.570207021375*^9}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"q1", "\[CenterDot]", "A", "\[CenterDot]", "q2"}], " ", "\[Equal]",
+    " ", 
+   RowBox[{"q1", "\[CenterDot]", 
+    RowBox[{"(", " ", 
+     RowBox[{"A", "\[CenterDot]", "q2"}], " ", ")"}]}], " ", "\[Equal]", " ", 
+   
+   RowBox[{
+    RowBox[{"(", " ", 
+     RowBox[{"q1", "\[CenterDot]", "A"}], " ", ")"}], "\[CenterDot]", 
+    "q2"}]}], " ", "//", "Assert"}]], "Input",
+ CellChangeTimes->{{3.5436872370625*^9, 3.54368727409375*^9}, {
+   3.543731496375*^9, 3.543731498359375*^9}, {3.54381761521875*^9, 
+   3.543817667359375*^9}, {3.543829740765625*^9, 3.543829743796875*^9}, {
+   3.54383043503125*^9, 3.543830439328125*^9}, {3.5438304744375*^9, 
+   3.54383048865625*^9}, {3.543831655453125*^9, 3.543831656390625*^9}, 
+   3.5438317996875*^9, 3.5438597925625*^9, {3.5439887853125*^9, 
+   3.543988785328125*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186386515625*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"q", "\[CenterDot]", "A", "\[CenterDot]", 
+    SuperscriptBox["q", "*"]}], " ", "\[Equal]", " ", 
+   RowBox[{
+    RowBox[{"(", " ", 
+     RowBox[{"q", "\[CenterDot]", "A"}], " ", ")"}], "\[CenterDot]", 
+    SuperscriptBox["q", "*"]}]}], " ", "//", "Assert"}]], "Input",
+ CellChangeTimes->{{3.5436872370625*^9, 3.54368727409375*^9}, {
+   3.543731496375*^9, 3.543731498359375*^9}, {3.54381761521875*^9, 
+   3.543817667359375*^9}, {3.54382973621875*^9, 3.543829737484375*^9}, {
+   3.543829865296875*^9, 3.5438298789375*^9}, 3.543830492140625*^9, 
+   3.54383166271875*^9, 3.5438318020625*^9, {3.54384822984375*^9, 
+   3.54384823071875*^9}, 3.543859793*^9, {3.543988785328125*^9, 
+   3.543988785328125*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186386875*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"q", "\[CenterDot]", "A", "\[CenterDot]", 
+    SuperscriptBox["q", "*"]}], " ", "\[Equal]", " ", 
+   RowBox[{"q", "\[CenterDot]", 
+    RowBox[{"(", " ", 
+     RowBox[{"A", "\[CenterDot]", 
+      SuperscriptBox["q", "*"]}], " ", ")"}]}]}], " ", "//", 
+  "Assert"}]], "Input",
+ CellChangeTimes->{{3.5436872370625*^9, 3.54368727409375*^9}, {
+   3.543731496375*^9, 3.543731498359375*^9}, {3.54381761521875*^9, 
+   3.543817667359375*^9}, {3.5438297301875*^9, 3.54382975328125*^9}, {
+   3.5438298126875*^9, 3.54382984984375*^9}, 3.543831663375*^9, 
+   3.543831804671875*^9, 3.543859793296875*^9, {3.543988785328125*^9, 
+   3.543988785328125*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.54418638696875*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   SuperscriptBox[
+    RowBox[{"(", " ", 
+     RowBox[{"q", "\[CenterDot]", "I4"}], " ", ")"}], "\[Transpose]"], " ", 
+   "\[Equal]", " ", 
+   RowBox[{
+    SuperscriptBox["q", "*"], "\[CenterDot]", "I4"}]}], " ", "//", 
+  "Assert"}]], "Input",
+ CellChangeTimes->{{3.543687786015625*^9, 3.543687798453125*^9}, {
+   3.543688527765625*^9, 3.54368854425*^9}, {3.5438177378125*^9, 
+   3.5438177879375*^9}, {3.5438218295*^9, 3.5438218389375*^9}, {
+   3.543831779359375*^9, 3.543831806328125*^9}, {3.543848225578125*^9, 
+   3.5438482259375*^9}, 3.54385979353125*^9, {3.54398878534375*^9, 
+   3.54398878534375*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186387015625*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   SuperscriptBox[
+    RowBox[{"(", " ", 
+     RowBox[{"I4", "\[CenterDot]", "q"}], " ", ")"}], "\[Transpose]"], " ", 
+   "\[Equal]", " ", 
+   RowBox[{"I4", "\[CenterDot]", 
+    SuperscriptBox["q", "*"]}]}], "  ", "//", "Assert"}]], "Input",
+ CellChangeTimes->{{3.543687786015625*^9, 3.543687798453125*^9}, {
+   3.543688527765625*^9, 3.54368854425*^9}, {3.5438177378125*^9, 
+   3.5438177879375*^9}, {3.543817835171875*^9, 3.543817846890625*^9}, {
+   3.543821843078125*^9, 3.543821848875*^9}, {3.543831807625*^9, 
+   3.543831810203125*^9}, {3.54384822353125*^9, 3.543848223828125*^9}, 
+   3.54385979375*^9, {3.543988785359375*^9, 3.543988785359375*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.5441863870625*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"q", "\[CenterDot]", "I4"}], ")"}], "\[CenterDot]", "A"}], " ", 
+   "\[Equal]", " ", 
+   RowBox[{"q", "\[CenterDot]", "A"}]}], "//", "Assert"}]], "Input",
+ CellChangeTimes->{{3.543829041703125*^9, 3.543829120015625*^9}, {
+   3.543829151484375*^9, 3.543829164703125*^9}, {3.543829377109375*^9, 
+   3.54382937890625*^9}, {3.543831775375*^9, 3.54383177596875*^9}, {
+   3.543839631125*^9, 3.543839632*^9}, {3.543848215359375*^9, 
+   3.543848215984375*^9}, 3.543859794328125*^9, {3.543988785359375*^9, 
+   3.543988785359375*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186387109375*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"I4", "\[CenterDot]", "q"}], ")"}], "\[CenterDot]", "A"}], " ", 
+   "\[Equal]", " ", 
+   RowBox[{"A", "\[CenterDot]", "q"}]}], " ", "//", "Assert"}]], "Input",
+ CellChangeTimes->{{3.54382918984375*^9, 3.543829364140625*^9}, 
+   3.54383183325*^9, {3.543839636375*^9, 3.5438396373125*^9}, 
+   3.54384444378125*^9, 3.543845057265625*^9, {3.543848213484375*^9, 
+   3.54384821371875*^9}, 3.54385979453125*^9, {3.543988785375*^9, 
+   3.543988785375*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.5441863871875*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"q1", "\[CenterDot]", "I4"}], ")"}], "\[CenterDot]", 
+    RowBox[{"(", 
+     RowBox[{"I4", "\[CenterDot]", "q2"}], ")"}]}], " ", "\[Equal]", " ", 
+   RowBox[{"q1", "\[CenterDot]", "I4", "\[CenterDot]", "q2"}]}], " ", "//", 
+  "Assert"}]], "Input",
+ CellChangeTimes->{{3.543829041703125*^9, 3.543829120015625*^9}, 
+   3.543831836359375*^9, {3.543839640375*^9, 3.543839640734375*^9}, {
+   3.5438482103125*^9, 3.5438482108125*^9}, 3.543859794703125*^9, {
+   3.543988785390625*^9, 3.543988785390625*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.54418638728125*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"I4", "\[CenterDot]", "q2"}], ")"}], "\[CenterDot]", 
+    RowBox[{"(", " ", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"q1", "\[CenterDot]", "I4"}], ")"}], "\[CenterDot]", "A"}], 
+     " ", ")"}]}], "\[Equal]", " ", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"q1", "\[CenterDot]", "A"}], ")"}], "\[CenterDot]", "q2"}], " ", 
+   "\[Equal]", " ", 
+   RowBox[{"q1", "\[CenterDot]", "A", "\[CenterDot]", "q2"}]}], " ", "//", 
+  "Assert"}]], "Input",
+ CellChangeTimes->{{3.543829419765625*^9, 3.54382954634375*^9}, {
+   3.54382961484375*^9, 3.543829710125*^9}, {3.54383056090625*^9, 
+   3.543830566171875*^9}, {3.543830633625*^9, 3.54383066521875*^9}, {
+   3.543831839*^9, 3.54383187553125*^9}, {3.543839642734375*^9, 
+   3.54383964440625*^9}, {3.54384819171875*^9, 3.54384820515625*^9}, 
+   3.54385979578125*^9, {3.54398878540625*^9, 3.54398878540625*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186387359375*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"I4", "\[CenterDot]", "q2"}], ")"}], "\[CenterDot]", 
+     RowBox[{"(", 
+      RowBox[{"q1", "\[CenterDot]", "I4"}], ")"}], "\[CenterDot]", "A"}], 
+    "\[Equal]", " ", 
+    RowBox[{"q1", "\[CenterDot]", "A", "\[CenterDot]", "q2"}]}], " ", 
+   "\[And]", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"I4", "\[CenterDot]", "q2"}], ")"}], "\[CenterDot]", 
+     RowBox[{"(", 
+      RowBox[{"q1", "\[CenterDot]", "I4"}], ")"}], "\[CenterDot]", "A"}], 
+    "\[Equal]", " ", 
+    RowBox[{"q1", "\[CenterDot]", "A", "\[CenterDot]", "q2"}]}], " ", 
+   "\[And]", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"q1", "\[CenterDot]", "I4"}], ")"}], "\[CenterDot]", 
+     RowBox[{"(", 
+      RowBox[{"I4", "\[CenterDot]", "q2"}], ")"}], "\[CenterDot]", "A"}], 
+    "\[Equal]", " ", 
+    RowBox[{"q1", "\[CenterDot]", "A", "\[CenterDot]", "q2"}]}], " ", 
+   "\[And]", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"q1", "\[CenterDot]", "I4", "\[CenterDot]", "q2"}], ")"}], 
+     "\[CenterDot]", "A"}], "\[Equal]", " ", 
+    RowBox[{"q1", "\[CenterDot]", "A", "\[CenterDot]", "q2"}]}]}], "  ", "//",
+   "Assert"}]], "Input",
+ CellChangeTimes->{{3.543829419765625*^9, 3.54382954634375*^9}, {
+   3.54382961484375*^9, 3.543829710125*^9}, {3.54383056090625*^9, 
+   3.543830627578125*^9}, 3.543831851390625*^9, {3.54383964584375*^9, 
+   3.543839648140625*^9}, {3.543848082046875*^9, 3.54384814878125*^9}, 
+   3.54385979578125*^9, {3.543988785421875*^9, 3.5439887854375*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.54418638746875*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Conjugations of quaternion-matrix multiplications:", "TextGroup",
+ CellChangeTimes->{{3.543870055921875*^9, 3.54387014125*^9}, 3.5702070245*^9}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"Conj", "[", " ", 
+    RowBox[{"q", "\[CenterDot]", "A"}], " ", "]"}], " ", "\[Equal]", " ", 
+   RowBox[{
+    RowBox[{"Conj", "[", "A", "]"}], "\[CenterDot]", 
+    SuperscriptBox["q", "*"]}]}], "  ", "//", "Assert"}]], "Input",
+ CellChangeTimes->{{3.5437315955*^9, 3.543731602796875*^9}, {
+   3.543822164734375*^9, 3.543822165828125*^9}, {3.543831812375*^9, 
+   3.5438318153125*^9}, {3.543848220671875*^9, 3.543848220984375*^9}, 
+   3.54385979396875*^9, {3.5439081150625*^9, 3.543908128640625*^9}, {
+   3.543988785453125*^9, 3.543988785453125*^9}, {3.543989092828125*^9, 
+   3.543989093625*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.5441863875625*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"Conj", "[", " ", 
+    RowBox[{"A", "\[CenterDot]", "q"}], " ", "]"}], " ", "\[Equal]", " ", 
+   RowBox[{
+    SuperscriptBox["q", "*"], "\[CenterDot]", 
+    RowBox[{"Conj", "[", "A", "]"}]}]}], " ", "//", "Assert"}]], "Input",
+ CellChangeTimes->{{3.5437315955*^9, 3.543731602796875*^9}, {
+   3.543822164734375*^9, 3.543822165828125*^9}, {3.543822523578125*^9, 
+   3.54382254596875*^9}, 3.543831827953125*^9, {3.543848218125*^9, 
+   3.5438482186875*^9}, 3.54385979415625*^9, {3.54390812525*^9, 
+   3.543908125609375*^9}, {3.54398878546875*^9, 3.54398878546875*^9}, {
+   3.54398909534375*^9, 3.543989095859375*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.54418638765625*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"Conj", "[", " ", 
+    RowBox[{"q1", "\[CenterDot]", "A", "\[CenterDot]", "q2"}], "]"}], " ", 
+   "\[Equal]", 
+   RowBox[{"Conj", "[", " ", 
+    RowBox[{"q1", "\[CenterDot]", 
+     RowBox[{"(", 
+      RowBox[{"A", "\[CenterDot]", "q2"}], ")"}]}], "]"}], " ", "\[Equal]", 
+   " ", 
+   RowBox[{
+    RowBox[{"Conj", "[", 
+     RowBox[{"A", "\[CenterDot]", "q2"}], "]"}], "\[CenterDot]", 
+    SuperscriptBox["q1", "*"]}], " ", "\[Equal]", " ", 
+   RowBox[{
+    SuperscriptBox["q2", "*"], "\[CenterDot]", 
+    RowBox[{"Conj", "[", "A", "]"}], "\[CenterDot]", 
+    SuperscriptBox["q1", "*"]}]}], "//", "Assert"}]], "Input",
+ CellChangeTimes->{{3.544185994515625*^9, 3.54418603321875*^9}, {
+  3.544186073359375*^9, 3.544186162703125*^9}, {3.544186251*^9, 
+  3.5441862699375*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544188612765625*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"Conj", "[", " ", 
+    RowBox[{"q", "\[CenterDot]", "A", "\[CenterDot]", 
+     SuperscriptBox["q", "*"]}], "]"}], " ", "\[Equal]", " ", 
+   RowBox[{"q", "\[CenterDot]", 
+    RowBox[{"Conj", "[", "A", "]"}], "\[CenterDot]", 
+    SuperscriptBox["q", "*"]}]}], "//", "Assert"}]], "Input",
+ CellChangeTimes->{{3.544185994515625*^9, 3.54418603321875*^9}, {
+   3.544186073359375*^9, 3.544186162703125*^9}, {3.544186251*^9, 
+   3.544186302421875*^9}, {3.544186403890625*^9, 3.54418642334375*^9}, 
+   3.544186665*^9}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.5441886129375*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell["Left and right rotation matrices", "Subsubsection",
+ CellChangeTimes->{{3.543730884140625*^9, 3.54373090421875*^9}, {
+  3.5438164938125*^9, 3.543816498296875*^9}, {3.543862881109375*^9, 
+  3.543862910125*^9}}],
+
+Cell[TextData[{
+ "Because the quaternion multiplication is bilinear, it can be expressed in a \
+matrix form, and in two different ways ([1]). Multiplication on the left ",
+ StyleBox["qp",
+  FontSlant->"Italic"],
+ " gives ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox[
+     StyleBox["L",
+      FontWeight->"Bold",
+      FontSlant->"Plain"], "q"], "\[NegativeVeryThinSpace]", "\[CenterDot]", 
+    "\[NegativeVeryThinSpace]", 
+    StyleBox["p",
+     FontWeight->"Bold",
+     FontSlant->"Plain"]}], TraditionalForm]]],
+ " where ",
+ StyleBox["p",
+  FontSlant->"Italic"],
+ " is now treated as a 4-dimensional column vector ",
+ StyleBox["p",
+  FontWeight->"Bold"],
+ " and multiplication on the right ",
+ StyleBox["pq",
+  FontSlant->"Italic"],
+ " gives ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    StyleBox["p",
+     FontWeight->"Bold",
+     FontSlant->"Plain"], 
+    StyleBox[" \[NegativeVeryThinSpace]",
+     FontSlant->"Plain"], 
+    StyleBox["\[CenterDot]",
+     FontSlant->"Plain"], 
+    StyleBox["\[NegativeVeryThinSpace]",
+     FontSlant->"Plain"], 
+    SubscriptBox[
+     StyleBox["R",
+      FontWeight->"Bold",
+      FontSlant->"Plain"], "q"]}], TraditionalForm]]],
+ ". "
+}], "TextGroup",
+ CellChangeTimes->{{3.543819821359375*^9, 3.54381982309375*^9}, {
+  3.54382007509375*^9, 3.5438200860625*^9}, {3.54382018690625*^9, 
+  3.543820308625*^9}, {3.54383965465625*^9, 3.543839664484375*^9}, {
+  3.543864630015625*^9, 3.543864743078125*^9}, {3.543873400421875*^9, 
+  3.543873431546875*^9}, {3.54387351946875*^9, 3.5438736051875*^9}, {
+  3.54390632721875*^9, 3.54390635196875*^9}, {3.5439081454375*^9, 
+  3.543908202125*^9}, {3.5439082370625*^9, 3.543908273828125*^9}, {
+  3.543908471125*^9, 3.5439084866875*^9}, {3.5702070334375*^9, 
+  3.570207038484375*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Let us define ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox[
+    StyleBox["L",
+     FontWeight->"Bold",
+     FontSlant->"Plain"], "q"], TraditionalForm]]],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox[
+    StyleBox["R",
+     FontWeight->"Bold",
+     FontSlant->"Plain"], "q"], TraditionalForm]]],
+ " as quaternion-multiplication with identity matrix:"
+}], "TextGroup",
+ CellChangeTimes->{{3.543819821359375*^9, 3.54381982309375*^9}, {
+  3.54382007509375*^9, 3.5438200860625*^9}, {3.54382018690625*^9, 
+  3.543820308625*^9}, {3.54383965465625*^9, 3.543839664484375*^9}, {
+  3.543864630015625*^9, 3.54386489415625*^9}, {3.5438735978125*^9, 
+  3.543873643359375*^9}, {3.54390827525*^9, 3.543908467625*^9}, {
+  3.543909534609375*^9, 3.543909550640625*^9}, {3.543988980890625*^9, 
+  3.54398899984375*^9}, {3.5702070591875*^9, 3.57020705953125*^9}}],
+
+Cell[BoxData[
+ RowBox[{"ClearAll", "[", " ", 
+  RowBox[{"L", ",", "R", ",", "Q"}], " ", "]"}]], "Input",
+ CellChangeTimes->{{3.543689751984375*^9, 3.543689858890625*^9}, {
+   3.543816565640625*^9, 3.543816599453125*^9}, {3.54381670840625*^9, 
+   3.543816712578125*^9}, {3.54382497028125*^9, 3.54382500521875*^9}, 
+   3.543825405*^9, {3.543847383*^9, 3.54384739209375*^9}, {
+   3.543862921703125*^9, 3.543862921890625*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  SubscriptBox["L", "q_"], ":=", " ", 
+  RowBox[{"q", "\[CenterDot]", "I4"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  SubscriptBox["R", "q_"], ":=", " ", 
+  RowBox[{"I4", "\[CenterDot]", "q"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  SubscriptBox["Q", "q_"], ":=", 
+  RowBox[{
+   SubscriptBox["L", "q"], "\[CenterDot]", 
+   SubscriptBox["R", 
+    SuperscriptBox["q", "*"]]}]}]}], "Input",
+ CellChangeTimes->{{3.543689751984375*^9, 3.543689858890625*^9}, {
+   3.543816565640625*^9, 3.543816599453125*^9}, {3.54381670840625*^9, 
+   3.543816712578125*^9}, {3.543816930703125*^9, 3.543816931078125*^9}, 
+   3.54381699253125*^9, {3.543839665921875*^9, 3.543839666234375*^9}, {
+   3.543988785515625*^9, 3.543988785515625*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Proof that the quaternion multiplication can be decomposed into L&R matrix \
+parts and that ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox[
+     StyleBox["L",
+      FontWeight->"Bold",
+      FontSlant->"Plain"], "q"], 
+    SubscriptBox[
+     StyleBox["R",
+      FontWeight->"Bold",
+      FontSlant->"Plain"], 
+     SuperscriptBox["q", "*"]], 
+    StyleBox["p",
+     FontWeight->"Bold",
+     FontSlant->"Plain"]}], TraditionalForm]]],
+ " corresponds to ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"q", "\[VeryThinSpace]", "p", "\[VeryThinSpace]", 
+    SuperscriptBox["q", "*"]}], TraditionalForm]]],
+ " :"
+}], "TextGroup",
+ CellChangeTimes->{{3.543819821359375*^9, 3.54381982309375*^9}, {
+  3.54382007509375*^9, 3.5438200860625*^9}, {3.54382018690625*^9, 
+  3.543820308625*^9}, {3.54383965465625*^9, 3.543839664484375*^9}, {
+  3.543864630015625*^9, 3.54386489415625*^9}, {3.5438735978125*^9, 
+  3.543873643359375*^9}, {3.54390827525*^9, 3.543908467625*^9}, {
+  3.5439094696875*^9, 3.543909477140625*^9}, {3.543909513*^9, 
+  3.54390952103125*^9}, {3.57020706271875*^9, 3.5702070751875*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Assert", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     SubscriptBox["L", "q"], "\[CenterDot]", 
+     SubscriptBox["R", 
+      SuperscriptBox["q", "*"]], "\[CenterDot]", 
+     RowBox[{"ToVector", "[", "q1", "]"}]}], "\[Equal]", " ", 
+    RowBox[{"ToVector", "[", " ", 
+     RowBox[{"q", "\[CenterDot]", "q1", "\[CenterDot]", 
+      SuperscriptBox["q", "*"]}], " ", "]"}]}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Assumptions", "\[Rule]", 
+    RowBox[{
+     SuperscriptBox[
+      RowBox[{"\[LeftBracketingBar]", "q", "\[RightBracketingBar]"}], "2"], 
+     "\[Equal]", "1"}]}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.54366475571875*^9, 3.543664909421875*^9}, {
+   3.54368090603125*^9, 3.5436809368125*^9}, {3.543682049375*^9, 
+   3.54368205153125*^9}, {3.543817419140625*^9, 3.54381743765625*^9}, {
+   3.543819008875*^9, 3.543819055796875*^9}, {3.543819102203125*^9, 
+   3.543819138578125*^9}, {3.543819177828125*^9, 3.543819289109375*^9}, 
+   3.54381932221875*^9, {3.543819414625*^9, 3.54381951459375*^9}, {
+   3.54382200103125*^9, 3.5438220058125*^9}, {3.54382374975*^9, 
+   3.543823782921875*^9}, 3.5438258969375*^9, {3.543831999453125*^9, 
+   3.543832045828125*^9}, {3.5438322975625*^9, 3.543832299046875*^9}, {
+   3.54383969715625*^9, 3.543839704609375*^9}, {3.5438456505*^9, 
+   3.543845662015625*^9}, {3.54384603753125*^9, 3.5438460405*^9}, 
+   3.543859795921875*^9, {3.5439085363125*^9, 3.543908574453125*^9}, {
+   3.543908619703125*^9, 3.543908634578125*^9}, {3.54390869525*^9, 
+   3.54390871996875*^9}, 3.543908772546875*^9, 3.54390882496875*^9, {
+   3.543909400671875*^9, 3.543909417859375*^9}, {3.543909489046875*^9, 
+   3.543909500546875*^9}, {3.54398884659375*^9, 3.543988847203125*^9}, {
+   3.5439890976875*^9, 3.54398909990625*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186387828125*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Properties of L, R and Q matrices", "Subsubsection",
+ CellChangeTimes->{{3.543730884140625*^9, 3.54373090421875*^9}, {
+  3.5438164938125*^9, 3.543816498296875*^9}, {3.54382506696875*^9, 
+  3.543825070953125*^9}, {3.543825171890625*^9, 3.543825187671875*^9}, {
+  3.543862955640625*^9, 3.543862955765625*^9}, {3.543864610953125*^9, 
+  3.54386461159375*^9}, {3.54390494140625*^9, 3.543904946140625*^9}, {
+  3.543905046546875*^9, 3.543905085859375*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   SubscriptBox["L", 
+    SuperscriptBox["q", "*"]], "\[Equal]", 
+   SuperscriptBox[
+    RowBox[{"(", 
+     SubscriptBox["L", "q"], ")"}], "\[Transpose]"]}], "  ", "//", 
+  "Assert"}]], "Input",
+ CellChangeTimes->{{3.543690042953125*^9, 3.543690053515625*^9}, {
+   3.543690085109375*^9, 3.543690183109375*^9}, {3.543690218609375*^9, 
+   3.54369040346875*^9}, {3.54369061659375*^9, 3.5436906326875*^9}, {
+   3.54369089971875*^9, 3.543690921*^9}, {3.543816654703125*^9, 
+   3.543816680296875*^9}, {3.543818968796875*^9, 3.543818988359375*^9}, {
+   3.543820770703125*^9, 3.543820800328125*^9}, {3.543821884234375*^9, 
+   3.543821889640625*^9}, 3.543831901671875*^9, {3.543844876453125*^9, 
+   3.543844912109375*^9}, 3.543859795796875*^9}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.54418638790625*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   SubscriptBox["R", 
+    SuperscriptBox["q", "*"]], "\[Equal]", 
+   SuperscriptBox[
+    RowBox[{"(", 
+     SubscriptBox["R", "q"], ")"}], "\[Transpose]"]}], " ", "//", 
+  "Assert"}]], "Input",
+ CellChangeTimes->{{3.543690042953125*^9, 3.543690053515625*^9}, {
+   3.543690085109375*^9, 3.543690183109375*^9}, {3.543690218609375*^9, 
+   3.54369040346875*^9}, {3.54369061659375*^9, 3.5436906326875*^9}, {
+   3.54369089971875*^9, 3.543690921*^9}, {3.543816654703125*^9, 
+   3.543816680296875*^9}, {3.543818968796875*^9, 3.543818988359375*^9}, {
+   3.54382186025*^9, 3.543821866859375*^9}, 3.543831903078125*^9, {
+   3.543844898578125*^9, 3.5438449051875*^9}, 3.543859795796875*^9}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186387984375*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"(", " ", 
+     RowBox[{"q", "\[CenterDot]", 
+      SubscriptBox["R", 
+       SuperscriptBox["q", "*"]]}], " ", ")"}], "\[CenterDot]", "A"}], 
+   "\[Equal]", 
+   RowBox[{"q", "\[CenterDot]", 
+    RowBox[{"(", " ", 
+     RowBox[{
+      SubscriptBox["R", 
+       SuperscriptBox["q", "*"]], "\[CenterDot]", "A"}], " ", ")"}]}], 
+   "\[Equal]", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      SubscriptBox["L", "q"], "\[CenterDot]", "A"}], " ", ")"}], 
+    "\[CenterDot]", 
+    SuperscriptBox["q", "*"]}]}], " ", "//", "Assert"}]], "Input",
+ CellChangeTimes->{{3.543690931609375*^9, 3.54369103134375*^9}, 
+   3.543691072015625*^9, 3.54369111265625*^9, {3.54369115425*^9, 
+   3.54369117203125*^9}, {3.5437263883125*^9, 3.5437264601875*^9}, {
+   3.54372675171875*^9, 3.543726758203125*^9}, {3.54372678825*^9, 
+   3.543726821234375*^9}, {3.543726894171875*^9, 3.54372690715625*^9}, {
+   3.5437270625625*^9, 3.5437271331875*^9}, {3.5437271705*^9, 
+   3.54372720990625*^9}, {3.543727261859375*^9, 3.54372738009375*^9}, {
+   3.543731555578125*^9, 3.54373155678125*^9}, {3.543822101921875*^9, 
+   3.54382215928125*^9}, 3.543822305140625*^9, 3.543831906265625*^9, {
+   3.54383966709375*^9, 3.543839678*^9}, 3.543859795796875*^9, {
+   3.5439887855625*^9, 3.5439887855625*^9}, {3.543989101296875*^9, 
+   3.543989105109375*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.5441863880625*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   SubscriptBox["Q", "q"], "\[Equal]", 
+   RowBox[{
+    SubscriptBox["L", "q"], "\[CenterDot]", 
+    SubscriptBox["R", 
+     SuperscriptBox["q", "*"]]}], "\[Equal]", 
+   SuperscriptBox[
+    RowBox[{"(", 
+     RowBox[{
+      SubsuperscriptBox["R", 
+       SuperscriptBox["q", "*"], "\[Transpose]"], "\[CenterDot]", 
+      SubsuperscriptBox["L", "q", "\[Transpose]"]}], ")"}], "\[Transpose]"], 
+   "\[Equal]", 
+   SuperscriptBox[
+    RowBox[{"(", 
+     RowBox[{
+      SubscriptBox["R", "q"], "\[CenterDot]", 
+      SubscriptBox["L", 
+       SuperscriptBox["q", "*"]]}], ")"}], "\[Transpose]"], "\[Equal]", 
+   RowBox[{
+    SubscriptBox["R", 
+     SuperscriptBox["q", "*"]], "\[CenterDot]", 
+    SubscriptBox["L", "q"]}]}], " ", "//", "Assert"}]], "Input",
+ CellChangeTimes->{{3.543820371140625*^9, 3.54382044315625*^9}, {
+   3.5438205415625*^9, 3.543820607453125*^9}, {3.543821901640625*^9, 
+   3.5438219548125*^9}, {3.54382330353125*^9, 3.543823330328125*^9}, 
+   3.543831908203125*^9, {3.54383967896875*^9, 3.54383968128125*^9}, 
+   3.543859795796875*^9}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.54418638815625*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   SubscriptBox["Q", 
+    SuperscriptBox["q", "*"]], "\[Equal]", 
+   RowBox[{
+    SubscriptBox["R", "q"], "\[CenterDot]", 
+    SubscriptBox["L", 
+     SuperscriptBox["q", "*"]]}], "==", 
+   RowBox[{
+    SubscriptBox["L", 
+     SuperscriptBox["q", "*"]], "\[CenterDot]", 
+    SubscriptBox["R", "q"]}]}], " ", "//", "Assert"}]], "Input",
+ CellChangeTimes->{{3.543820371140625*^9, 3.5438204679375*^9}, 
+   3.543831909625*^9, {3.543839682171875*^9, 3.543839682953125*^9}, 
+   3.543859795796875*^9}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186388234375*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    SubscriptBox["Q", "q"], "\[CenterDot]", 
+    SubscriptBox["Q", 
+     SuperscriptBox["q", "*"]]}], "\[Equal]", 
+   RowBox[{
+    SuperscriptBox[
+     RowBox[{"\[LeftBracketingBar]", "q", "\[RightBracketingBar]"}], "4"], 
+    "I4"}]}], "//", "Assert"}]], "Input",
+ CellChangeTimes->{{3.544187884140625*^9, 3.54418793659375*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544188728*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"Conj", "[", 
+     RowBox[{
+      SubscriptBox["L", "q"], "\[CenterDot]", "A"}], " ", "]"}], 
+    "\[CenterDot]", 
+    SuperscriptBox["q", "*"]}], "\[Equal]", 
+   RowBox[{"Conj", "[", " ", 
+    RowBox[{"q", "\[CenterDot]", 
+     RowBox[{"(", 
+      RowBox[{
+       SubscriptBox["L", "q"], "\[CenterDot]", "A"}], ")"}]}], " ", "]"}]}], 
+  " ", "//", "Assert"}]], "Input",
+ CellChangeTimes->{{3.543690931609375*^9, 3.54369103134375*^9}, 
+   3.543691072015625*^9, 3.54369111265625*^9, {3.54369115425*^9, 
+   3.54369117203125*^9}, {3.5437263883125*^9, 3.5437264601875*^9}, {
+   3.54372675171875*^9, 3.543726758203125*^9}, {3.54372678825*^9, 
+   3.543726821234375*^9}, {3.543726894171875*^9, 3.54372690715625*^9}, {
+   3.5437270625625*^9, 3.5437271331875*^9}, {3.5437271705*^9, 
+   3.54372720990625*^9}, {3.543727261859375*^9, 3.54372738009375*^9}, {
+   3.543731555578125*^9, 3.54373155678125*^9}, {3.543822101921875*^9, 
+   3.54382215928125*^9}, {3.543822305140625*^9, 3.543822371390625*^9}, 
+   3.54383191315625*^9, {3.54383968378125*^9, 3.543839684578125*^9}, 
+   3.543859795796875*^9, {3.54398878559375*^9, 3.54398878559375*^9}, {
+   3.54398910628125*^9, 3.543989110046875*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186388546875*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"Conj", "[", 
+     RowBox[{
+      SubscriptBox["L", "q"], "\[CenterDot]", "A"}], " ", "]"}], 
+    "\[CenterDot]", 
+    SuperscriptBox["q", "*"]}], "\[Equal]", 
+   RowBox[{
+    RowBox[{"Conj", "[", 
+     RowBox[{
+      SubscriptBox["L", "q"], "\[CenterDot]", "A"}], "]"}], "\[CenterDot]", 
+    SuperscriptBox["q", "*"]}]}], " ", "//", "Assert"}]], "Input",
+ CellChangeTimes->{{3.543690931609375*^9, 3.54369103134375*^9}, 
+   3.543691072015625*^9, 3.54369111265625*^9, {3.54369115425*^9, 
+   3.54369117203125*^9}, {3.5437263883125*^9, 3.5437264601875*^9}, {
+   3.54372675171875*^9, 3.543726758203125*^9}, {3.54372678825*^9, 
+   3.543726821234375*^9}, {3.543726894171875*^9, 3.54372690715625*^9}, {
+   3.5437270625625*^9, 3.5437271331875*^9}, {3.5437271705*^9, 
+   3.54372720990625*^9}, {3.543727261859375*^9, 3.54372738009375*^9}, {
+   3.543731555578125*^9, 3.54373155678125*^9}, {3.543822101921875*^9, 
+   3.54382215928125*^9}, {3.543822305140625*^9, 3.543822371390625*^9}, {
+   3.543822421546875*^9, 3.543822426453125*^9}, 3.54383191553125*^9, {
+   3.543839685359375*^9, 3.543839686109375*^9}, 3.543859795796875*^9, {
+   3.54398878559375*^9, 3.54398878559375*^9}, {3.5439891118125*^9, 
+   3.543989113859375*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186388609375*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["L & R matrices components", "Subsubsection",
+ CellChangeTimes->{{3.543730884140625*^9, 3.543730886234375*^9}, {
+   3.543817967640625*^9, 3.54381796853125*^9}, {3.543846857984375*^9, 
+   3.5438469103125*^9}, 3.543847148140625*^9, {3.543862975609375*^9, 
+   3.543863015328125*^9}, {3.543864211390625*^9, 3.543864215171875*^9}, {
+   3.54386458346875*^9, 3.54386459390625*^9}, {3.5439049496875*^9, 
+   3.54390495146875*^9}, {3.543905097625*^9, 3.543905102984375*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Grid", "@", 
+  RowBox[{"{", " ", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"{", " ", 
+     RowBox[{
+     "\"\<\!\(\*SubscriptBox[\(L\), \(q\)]\)\>\"", ",", " ", 
+      "\"\<\!\(\*SubscriptBox[\(L\), SuperscriptBox[\(q\), \(*\)]]\)\>\"", 
+      ",", " ", "\"\<\!\(\*SubscriptBox[\(R\), \(q\)]\)\>\"", ",", " ", 
+      "\"\<\!\(\*SubscriptBox[\(R\), SuperscriptBox[\(q\), \(*\)]]\)\>\""}], 
+     " ", "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{"{", " ", 
+     RowBox[{
+      RowBox[{
+       SubscriptBox["L", "q"], " ", "//", "QForm"}], ",", " ", 
+      RowBox[{
+       SubscriptBox["L", 
+        SuperscriptBox["q", "*"]], " ", "//", "QForm"}], ",", " ", 
+      RowBox[{
+       SubscriptBox["R", "q"], " ", "//", "QForm"}], ",", " ", 
+      RowBox[{
+       SubscriptBox["R", 
+        SuperscriptBox["q", "*"]], " ", "//", "QForm"}]}], " ", "}"}]}], 
+   "\[IndentingNewLine]", "}"}]}]], "Input",
+ CellChangeTimes->{{3.54384376365625*^9, 3.5438437693125*^9}, {
+  3.5438467161875*^9, 3.54384683221875*^9}, {3.54384694296875*^9, 
+  3.54384699603125*^9}, {3.543847262125*^9, 3.543847289140625*^9}}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"\\!\\(\\*SubscriptBox[\\(L\\), \\(q\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(L\\), SuperscriptBox[\\(q\\), \
+\\(*\\)]]\\)\"\>", "\<\"\\!\\(\\*SubscriptBox[\\(R\\), \\(q\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(R\\), SuperscriptBox[\\(q\\), \
+\\(*\\)]]\\)\"\>"},
+    {
+     TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+         {"w", 
+          RowBox[{"-", "x"}], 
+          RowBox[{"-", "y"}], 
+          RowBox[{"-", "z"}]},
+         {"x", "w", 
+          RowBox[{"-", "z"}], "y"},
+         {"y", "z", "w", 
+          RowBox[{"-", "x"}]},
+         {"z", 
+          RowBox[{"-", "y"}], "x", "w"}
+        },
+        GridBoxAlignment->{
+         "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+          "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+        GridBoxDividers->{"Columns" -> {False, 
+            GrayLevel[0.84]}, "Rows" -> {False, 
+            GrayLevel[0.84]}},
+        GridBoxSpacings->{"Columns" -> {
+            Offset[0.27999999999999997`], {
+             Offset[0.7]}, 
+            Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, 
+          "Rows" -> {
+            Offset[0.2], {
+             Offset[0.4]}, 
+            Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+      DisplayForm], 
+     TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+         {"w", "x", "y", "z"},
+         {
+          RowBox[{"-", "x"}], "w", "z", 
+          RowBox[{"-", "y"}]},
+         {
+          RowBox[{"-", "y"}], 
+          RowBox[{"-", "z"}], "w", "x"},
+         {
+          RowBox[{"-", "z"}], "y", 
+          RowBox[{"-", "x"}], "w"}
+        },
+        GridBoxAlignment->{
+         "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+          "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+        GridBoxDividers->{"Columns" -> {False, 
+            GrayLevel[0.84]}, "Rows" -> {False, 
+            GrayLevel[0.84]}},
+        GridBoxSpacings->{"Columns" -> {
+            Offset[0.27999999999999997`], {
+             Offset[0.7]}, 
+            Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, 
+          "Rows" -> {
+            Offset[0.2], {
+             Offset[0.4]}, 
+            Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+      DisplayForm], 
+     TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+         {"w", 
+          RowBox[{"-", "x"}], 
+          RowBox[{"-", "y"}], 
+          RowBox[{"-", "z"}]},
+         {"x", "w", "z", 
+          RowBox[{"-", "y"}]},
+         {"y", 
+          RowBox[{"-", "z"}], "w", "x"},
+         {"z", "y", 
+          RowBox[{"-", "x"}], "w"}
+        },
+        GridBoxAlignment->{
+         "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+          "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+        GridBoxDividers->{"Columns" -> {False, 
+            GrayLevel[0.84]}, "Rows" -> {False, 
+            GrayLevel[0.84]}},
+        GridBoxSpacings->{"Columns" -> {
+            Offset[0.27999999999999997`], {
+             Offset[0.7]}, 
+            Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, 
+          "Rows" -> {
+            Offset[0.2], {
+             Offset[0.4]}, 
+            Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+      DisplayForm], 
+     TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+         {"w", "x", "y", "z"},
+         {
+          RowBox[{"-", "x"}], "w", 
+          RowBox[{"-", "z"}], "y"},
+         {
+          RowBox[{"-", "y"}], "z", "w", 
+          RowBox[{"-", "x"}]},
+         {
+          RowBox[{"-", "z"}], 
+          RowBox[{"-", "y"}], "x", "w"}
+        },
+        GridBoxAlignment->{
+         "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+          "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+        GridBoxDividers->{"Columns" -> {False, 
+            GrayLevel[0.84]}, "Rows" -> {False, 
+            GrayLevel[0.84]}},
+        GridBoxSpacings->{"Columns" -> {
+            Offset[0.27999999999999997`], {
+             Offset[0.7]}, 
+            Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, 
+          "Rows" -> {
+            Offset[0.2], {
+             Offset[0.4]}, 
+            Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+      DisplayForm]}
+   },
+   ColumnsEqual->False,
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+   RowsEqual->False],
+  "Grid"]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.5441863886875*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Rotation matrix Q components", "Subsubsection",
+ CellChangeTimes->{{3.543730884140625*^9, 3.543730886234375*^9}, {
+   3.543817967640625*^9, 3.54381796853125*^9}, {3.543846857984375*^9, 
+   3.5438469103125*^9}, 3.543847148140625*^9, {3.543862975609375*^9, 
+   3.543863015328125*^9}, {3.543864211390625*^9, 3.543864215171875*^9}, {
+   3.54386458346875*^9, 3.54386459390625*^9}, {3.5439049496875*^9, 
+   3.543904966859375*^9}, {3.543905110578125*^9, 3.54390516446875*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Grid", "@", 
+  RowBox[{"{", " ", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"{", " ", 
+     RowBox[{
+     "\"\<\!\(\*SubscriptBox[\(Q\), \(q\)]\) \[Equal] \
+\!\(\*SubscriptBox[\(L\), \(q\)]\)\[CenterDot]\!\(\*SubscriptBox[\(R\), \
+SuperscriptBox[\(q\), \(*\)]]\) \[Equal] \!\(\*SubscriptBox[\(R\), \
+SuperscriptBox[\(q\), \(*\)]]\)\[CenterDot]\!\(\*SubscriptBox[\(L\), \(q\)]\)\
+\>\"", ",", " ", 
+      "\"\<\!\(\*SubscriptBox[\(Q\), SuperscriptBox[\(q\), \(*\)]]\) \[Equal] \
+\!\(\*SubscriptBox[\(L\), SuperscriptBox[\(q\), \
+\(*\)]]\)\[CenterDot]\!\(\*SubscriptBox[\(R\), \(q\)]\) \[Equal] \
+\!\(\*SubscriptBox[\(R\), \(q\)]\)\[CenterDot]\!\(\*SubscriptBox[\(L\), \
+SuperscriptBox[\(q\), \(*\)]]\)\>\""}], " ", "}"}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"{", " ", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"Simplify", "[", " ", 
+        RowBox[{
+         SubscriptBox["Q", "q"], ",", " ", 
+         RowBox[{"Assumptions", "\[Rule]", 
+          RowBox[{
+           SuperscriptBox[
+            RowBox[{"\[LeftBracketingBar]", "q", "\[RightBracketingBar]"}], 
+            "2"], "\[Equal]", "1"}]}]}], " ", "]"}], " ", "//", "QForm"}], 
+      ",", "\[IndentingNewLine]", " ", 
+      RowBox[{
+       RowBox[{"Simplify", "[", " ", 
+        RowBox[{
+         SubscriptBox["Q", 
+          SuperscriptBox["q", "*"]], ",", " ", 
+         RowBox[{"Assumptions", "\[Rule]", 
+          RowBox[{
+           SuperscriptBox[
+            RowBox[{"\[LeftBracketingBar]", "q", "\[RightBracketingBar]"}], 
+            "2"], "\[Equal]", "1"}]}]}], " ", "]"}], " ", "//", "QForm"}]}], 
+     " ", "}"}]}], "\[IndentingNewLine]", "}"}]}]], "Input",
+ CellChangeTimes->{
+  3.543817122421875*^9, {3.543824685796875*^9, 3.5438247045*^9}, 
+   3.5438259045625*^9, {3.543832331421875*^9, 3.543832337140625*^9}, {
+   3.543842334140625*^9, 3.54384233478125*^9}, 3.543843778296875*^9, 
+   3.543845598375*^9, {3.54384702540625*^9, 3.543847127265625*^9}, {
+   3.543847176234375*^9, 3.54384717684375*^9}, {3.5438472148125*^9, 
+   3.5438473256875*^9}}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"\\!\\(\\*SubscriptBox[\\(Q\\), \\(q\\)]\\) \[Equal] \
+\\!\\(\\*SubscriptBox[\\(L\\), \
+\\(q\\)]\\)\[CenterDot]\\!\\(\\*SubscriptBox[\\(R\\), SuperscriptBox[\\(q\\), \
+\\(*\\)]]\\) \[Equal] \\!\\(\\*SubscriptBox[\\(R\\), SuperscriptBox[\\(q\\), \
+\\(*\\)]]\\)\[CenterDot]\\!\\(\\*SubscriptBox[\\(L\\), \\(q\\)]\\)\"\>", \
+"\<\"\\!\\(\\*SubscriptBox[\\(Q\\), SuperscriptBox[\\(q\\), \\(*\\)]]\\) \
+\[Equal] \\!\\(\\*SubscriptBox[\\(L\\), SuperscriptBox[\\(q\\), \\(*\\)]]\\)\
+\[CenterDot]\\!\\(\\*SubscriptBox[\\(R\\), \\(q\\)]\\) \[Equal] \
+\\!\\(\\*SubscriptBox[\\(R\\), \
+\\(q\\)]\\)\[CenterDot]\\!\\(\\*SubscriptBox[\\(L\\), SuperscriptBox[\\(q\\), \
+\\(*\\)]]\\)\"\>"},
+    {
+     TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+         {"1", "0", "0", "0"},
+         {"0", 
+          RowBox[{"1", "-", 
+           RowBox[{"2", " ", 
+            SuperscriptBox["y", "2"]}], "-", 
+           RowBox[{"2", " ", 
+            SuperscriptBox["z", "2"]}]}], 
+          RowBox[{
+           RowBox[{"2", " ", "x", " ", "y"}], "-", 
+           RowBox[{"2", " ", "w", " ", "z"}]}], 
+          RowBox[{"2", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"w", " ", "y"}], "+", 
+             RowBox[{"x", " ", "z"}]}], ")"}]}]},
+         {"0", 
+          RowBox[{"2", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"x", " ", "y"}], "+", 
+             RowBox[{"w", " ", "z"}]}], ")"}]}], 
+          RowBox[{"1", "-", 
+           RowBox[{"2", " ", 
+            SuperscriptBox["x", "2"]}], "-", 
+           RowBox[{"2", " ", 
+            SuperscriptBox["z", "2"]}]}], 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "2"}], " ", "w", " ", "x"}], "+", 
+           RowBox[{"2", " ", "y", " ", "z"}]}]},
+         {"0", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "2"}], " ", "w", " ", "y"}], "+", 
+           RowBox[{"2", " ", "x", " ", "z"}]}], 
+          RowBox[{"2", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"w", " ", "x"}], "+", 
+             RowBox[{"y", " ", "z"}]}], ")"}]}], 
+          RowBox[{"1", "-", 
+           RowBox[{"2", " ", 
+            SuperscriptBox["x", "2"]}], "-", 
+           RowBox[{"2", " ", 
+            SuperscriptBox["y", "2"]}]}]}
+        },
+        GridBoxAlignment->{
+         "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+          "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+        GridBoxDividers->{"Columns" -> {False, 
+            GrayLevel[0.84]}, "Rows" -> {False, 
+            GrayLevel[0.84]}},
+        GridBoxSpacings->{"Columns" -> {
+            Offset[0.27999999999999997`], {
+             Offset[0.7]}, 
+            Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, 
+          "Rows" -> {
+            Offset[0.2], {
+             Offset[0.4]}, 
+            Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+      DisplayForm], 
+     TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+         {"1", "0", "0", "0"},
+         {"0", 
+          RowBox[{"1", "-", 
+           RowBox[{"2", " ", 
+            SuperscriptBox["y", "2"]}], "-", 
+           RowBox[{"2", " ", 
+            SuperscriptBox["z", "2"]}]}], 
+          RowBox[{"2", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"x", " ", "y"}], "+", 
+             RowBox[{"w", " ", "z"}]}], ")"}]}], 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "2"}], " ", "w", " ", "y"}], "+", 
+           RowBox[{"2", " ", "x", " ", "z"}]}]},
+         {"0", 
+          RowBox[{
+           RowBox[{"2", " ", "x", " ", "y"}], "-", 
+           RowBox[{"2", " ", "w", " ", "z"}]}], 
+          RowBox[{"1", "-", 
+           RowBox[{"2", " ", 
+            SuperscriptBox["x", "2"]}], "-", 
+           RowBox[{"2", " ", 
+            SuperscriptBox["z", "2"]}]}], 
+          RowBox[{"2", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"w", " ", "x"}], "+", 
+             RowBox[{"y", " ", "z"}]}], ")"}]}]},
+         {"0", 
+          RowBox[{"2", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"w", " ", "y"}], "+", 
+             RowBox[{"x", " ", "z"}]}], ")"}]}], 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "2"}], " ", "w", " ", "x"}], "+", 
+           RowBox[{"2", " ", "y", " ", "z"}]}], 
+          RowBox[{"1", "-", 
+           RowBox[{"2", " ", 
+            SuperscriptBox["x", "2"]}], "-", 
+           RowBox[{"2", " ", 
+            SuperscriptBox["y", "2"]}]}]}
+        },
+        GridBoxAlignment->{
+         "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+          "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+        GridBoxDividers->{"Columns" -> {False, 
+            GrayLevel[0.84]}, "Rows" -> {False, 
+            GrayLevel[0.84]}},
+        GridBoxSpacings->{"Columns" -> {
+            Offset[0.27999999999999997`], {
+             Offset[0.7]}, 
+            Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, 
+          "Rows" -> {
+            Offset[0.2], {
+             Offset[0.4]}, 
+            Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+      DisplayForm]}
+   },
+   ColumnsEqual->False,
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+   RowsEqual->False],
+  "Grid"]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.5441863888125*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell["Shoemake's rotation matrix from quaternion", "Subsubsection",
+ CellChangeTimes->{{3.543730884140625*^9, 3.543730886234375*^9}, {
+   3.543817967640625*^9, 3.54381796853125*^9}, {3.543846857984375*^9, 
+   3.5438469103125*^9}, 3.543847148140625*^9, {3.543862975609375*^9, 
+   3.543863015328125*^9}, {3.543864211390625*^9, 3.543864215171875*^9}, {
+   3.54386458346875*^9, 3.54386459390625*^9}, {3.5439049496875*^9, 
+   3.543904981140625*^9}, {3.543905213140625*^9, 3.543905220484375*^9}, {
+   3.543906024109375*^9, 3.5439060331875*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Classical Shoemake's form of the rotation matrix from a quaternion is given \
+as (a transformation matrix based on the Cayley-Klein parameters; see [2]):\
+\>", "TextGroup",
+ CellChangeTimes->{{3.543906097484375*^9, 3.543906207953125*^9}, {
+  3.57020709371875*^9, 3.57020709590625*^9}, {3.570687490390625*^9, 
+  3.570687650078125*^9}, {3.570687892*^9, 3.570687924671875*^9}, {
+  3.570687983234375*^9, 3.57068798896875*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"RotationMatrix4", "[", " ", "q", " ", "]"}], " ", "//", 
+  "QForm"}]], "Input",
+ CellChangeTimes->{{3.543664702515625*^9, 3.543664721140625*^9}, {
+   3.54366489803125*^9, 3.543664901828125*^9}, {3.543680335703125*^9, 
+   3.54368034975*^9}, {3.5436803830625*^9, 3.543680409640625*^9}, {
+   3.54368045103125*^9, 3.54368049778125*^9}, {3.543680623875*^9, 
+   3.54368081584375*^9}, {3.5436808475*^9, 3.543680884296875*^9}, {
+   3.543816753546875*^9, 3.543816761421875*^9}, {3.54381683528125*^9, 
+   3.5438168415*^9}, 3.543817935203125*^9, {3.54382467196875*^9, 
+   3.543824681734375*^9}, {3.54384233934375*^9, 3.54384234075*^9}, 
+   3.54384378*^9, {3.54384605546875*^9, 3.5438460925*^9}, {
+   3.543864475578125*^9, 3.54386447640625*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  RowBox[{"(", "\[NoBreak]", GridBox[{
+     {"1", "0", "0", "0"},
+     {"0", 
+      RowBox[{"1", "-", 
+       RowBox[{"2", " ", 
+        RowBox[{"(", 
+         RowBox[{
+          SuperscriptBox["y", "2"], "+", 
+          SuperscriptBox["z", "2"]}], ")"}]}]}], 
+      RowBox[{
+       RowBox[{"2", " ", "x", " ", "y"}], "-", 
+       RowBox[{"2", " ", "w", " ", "z"}]}], 
+      RowBox[{
+       RowBox[{"2", " ", "w", " ", "y"}], "+", 
+       RowBox[{"2", " ", "x", " ", "z"}]}]},
+     {"0", 
+      RowBox[{
+       RowBox[{"2", " ", "x", " ", "y"}], "+", 
+       RowBox[{"2", " ", "w", " ", "z"}]}], 
+      RowBox[{"1", "-", 
+       RowBox[{"2", " ", 
+        RowBox[{"(", 
+         RowBox[{
+          SuperscriptBox["x", "2"], "+", 
+          SuperscriptBox["z", "2"]}], ")"}]}]}], 
+      RowBox[{
+       RowBox[{
+        RowBox[{"-", "2"}], " ", "w", " ", "x"}], "+", 
+       RowBox[{"2", " ", "y", " ", "z"}]}]},
+     {"0", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"-", "2"}], " ", "w", " ", "y"}], "+", 
+       RowBox[{"2", " ", "x", " ", "z"}]}], 
+      RowBox[{
+       RowBox[{"2", " ", "w", " ", "x"}], "+", 
+       RowBox[{"2", " ", "y", " ", "z"}]}], 
+      RowBox[{"1", "-", 
+       RowBox[{"2", " ", 
+        RowBox[{"(", 
+         RowBox[{
+          SuperscriptBox["x", "2"], "+", 
+          SuperscriptBox["y", "2"]}], ")"}]}]}]}
+    },
+    GridBoxAlignment->{
+     "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
+      "RowsIndexed" -> {}},
+    GridBoxDividers->{"Columns" -> {False, 
+        GrayLevel[0.84]}, "Rows" -> {False, 
+        GrayLevel[0.84]}},
+    GridBoxSpacings->{"Columns" -> {
+        Offset[0.27999999999999997`], {
+         Offset[0.7]}, 
+        Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+        Offset[0.2], {
+         Offset[0.4]}, 
+        Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+  DisplayForm]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.54418638884375*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell["Scalar, vector and cross-product parts of L&R matrices", "Subsubsection",
+ CellChangeTimes->{{3.543730884140625*^9, 3.54373090421875*^9}, {
+  3.5438164938125*^9, 3.543816498296875*^9}, {3.54382506696875*^9, 
+  3.543825070953125*^9}, {3.543825171890625*^9, 3.543825187671875*^9}, {
+  3.543862955640625*^9, 3.543862955765625*^9}, {3.543863713625*^9, 
+  3.5438637275*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Scalar part:", "TextGroup",
+ CellChangeTimes->{{3.543819821359375*^9, 3.54381982309375*^9}, 
+   3.570207098*^9}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    FractionBox["1", "2"], 
+    RowBox[{"(", 
+     RowBox[{
+      SubscriptBox["L", "q"], "+", 
+      SubscriptBox["L", 
+       SuperscriptBox["q", "*"]]}], ")"}]}], "\[Equal]", 
+   RowBox[{
+    FractionBox["1", "2"], 
+    RowBox[{"(", 
+     RowBox[{
+      SubscriptBox["R", "q"], "+", 
+      SubscriptBox["R", 
+       SuperscriptBox["q", "*"]]}], ")"}]}], "\[Equal]", 
+   TagBox[
+    RowBox[{"(", "\[NoBreak]", GridBox[{
+       {"w", "0", "0", "0"},
+       {"0", "w", "0", "0"},
+       {"0", "0", "w", "0"},
+       {"0", "0", "0", "w"}
+      },
+      GridBoxDividers->{
+       "ColumnsIndexed" -> {2 -> True}, "RowsIndexed" -> {2 -> True}}], 
+     "\[NoBreak]", ")"}],
+    Function[BoxForm`e$, 
+     MatrixForm[BoxForm`e$]]]}], " ", "//", " ", "Assert"}]], "Input",
+ CellChangeTimes->{{3.543690042953125*^9, 3.543690053515625*^9}, {
+   3.543690085109375*^9, 3.543690183109375*^9}, {3.543690218609375*^9, 
+   3.543690266515625*^9}, {3.543690440515625*^9, 3.54369048646875*^9}, {
+   3.5438180656875*^9, 3.54381828809375*^9}, {3.54381832484375*^9, 
+   3.543818325453125*^9}, {3.54381842025*^9, 3.5438185405625*^9}, {
+   3.543819597734375*^9, 3.543819616109375*^9}, {3.543838251265625*^9, 
+   3.5438382526875*^9}, 3.543859795796875*^9}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186388890625*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Vector part:", "TextGroup",
+ CellChangeTimes->{{3.543819821359375*^9, 3.5438198326875*^9}, 
+   3.5702070995625*^9}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    FractionBox["1", "2"], 
+    RowBox[{"(", 
+     RowBox[{
+      SubscriptBox["L", 
+       SuperscriptBox["q", "*"]], "-", 
+      SubscriptBox["R", "q"]}], ")"}]}], "==", 
+   RowBox[{
+    FractionBox["1", "2"], 
+    RowBox[{"(", 
+     RowBox[{
+      SubscriptBox["R", 
+       SuperscriptBox["q", "*"]], "-", 
+      SubscriptBox["L", "q"]}], ")"}]}], "\[Equal]", 
+   TagBox[
+    RowBox[{"(", "\[NoBreak]", GridBox[{
+       {"0", "x", "y", "z"},
+       {
+        RowBox[{"-", "x"}], "0", "0", "0"},
+       {
+        RowBox[{"-", "y"}], "0", "0", "0"},
+       {
+        RowBox[{"-", "z"}], "0", "0", "0"}
+      },
+      GridBoxDividers->{
+       "ColumnsIndexed" -> {2 -> True}, "RowsIndexed" -> {2 -> True}}], 
+     "\[NoBreak]", ")"}],
+    Function[BoxForm`e$, 
+     MatrixForm[BoxForm`e$]]]}], " ", "//", "Assert"}]], "Input",
+ CellChangeTimes->{{3.543690042953125*^9, 3.543690053515625*^9}, {
+   3.543690085109375*^9, 3.543690183109375*^9}, {3.543690218609375*^9, 
+   3.543690266515625*^9}, {3.543690440515625*^9, 3.54369048646875*^9}, {
+   3.5438180656875*^9, 3.54381828809375*^9}, {3.54381832484375*^9, 
+   3.543818325453125*^9}, 3.543818532859375*^9, {3.5438186301875*^9, 
+   3.54381863109375*^9}, 3.54383192034375*^9, 3.543859795796875*^9}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.5441863889375*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    FractionBox["1", "2"], 
+    RowBox[{"(", 
+     RowBox[{
+      SubscriptBox["L", "q"], "-", 
+      SubscriptBox["R", 
+       SuperscriptBox["q", "*"]]}], ")"}]}], "==", 
+   RowBox[{
+    FractionBox["1", "2"], 
+    RowBox[{"(", 
+     RowBox[{
+      SubscriptBox["R", "q"], "-", 
+      SubscriptBox["L", 
+       SuperscriptBox["q", "*"]]}], ")"}]}], "\[Equal]", 
+   SuperscriptBox[
+    TagBox[
+     RowBox[{"(", "\[NoBreak]", GridBox[{
+        {"0", "x", "y", "z"},
+        {
+         RowBox[{"-", "x"}], "0", "0", "0"},
+        {
+         RowBox[{"-", "y"}], "0", "0", "0"},
+        {
+         RowBox[{"-", "z"}], "0", "0", "0"}
+       },
+       GridBoxDividers->{
+        "ColumnsIndexed" -> {2 -> True}, "RowsIndexed" -> {2 -> True}}], 
+      "\[NoBreak]", ")"}],
+     Function[BoxForm`e$, 
+      MatrixForm[BoxForm`e$]]], "\[Transpose]"]}], " ", "//", 
+  "Assert"}]], "Input",
+ CellChangeTimes->{{3.543818345390625*^9, 3.543818366265625*^9}, {
+   3.54381840265625*^9, 3.543818404796875*^9}, 3.543818535390625*^9, {
+   3.543818626296875*^9, 3.54381862709375*^9}, {3.543819651875*^9, 
+   3.5438196671875*^9}, {3.543821975546875*^9, 3.5438219795*^9}, 
+   3.54383192215625*^9, 3.5438597958125*^9}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186388984375*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Cross product part:", "TextGroup",
+ CellChangeTimes->{{3.543819821359375*^9, 3.543819843078125*^9}, 
+   3.570207101453125*^9}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    FractionBox["1", "2"], 
+    RowBox[{"(", 
+     RowBox[{
+      SubscriptBox["L", "q"], "-", 
+      SubscriptBox["R", "q"]}], ")"}]}], "\[Equal]", 
+   TagBox[
+    RowBox[{"(", "\[NoBreak]", GridBox[{
+       {"0", "0", "0", "0"},
+       {"0", "0", 
+        RowBox[{"-", "z"}], "y"},
+       {"0", "z", "0", 
+        RowBox[{"-", "x"}]},
+       {"0", 
+        RowBox[{"-", "y"}], "x", "0"}
+      },
+      GridBoxDividers->{
+       "ColumnsIndexed" -> {2 -> True}, "RowsIndexed" -> {2 -> True}}], 
+     "\[NoBreak]", ")"}],
+    Function[BoxForm`e$, 
+     MatrixForm[BoxForm`e$]]]}], " ", "//", "Assert"}]], "Input",
+ CellChangeTimes->{{3.54381855875*^9, 3.543818758734375*^9}, {
+   3.54381890784375*^9, 3.5438189225*^9}, 3.543831932984375*^9, 
+   3.543859795859375*^9}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186389015625*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    FractionBox["1", "2"], 
+    RowBox[{"(", 
+     RowBox[{
+      SubscriptBox["L", 
+       SuperscriptBox["q", "*"]], "-", 
+      SubscriptBox["R", 
+       SuperscriptBox["q", "*"]]}], ")"}]}], "\[Equal]", 
+   SuperscriptBox[
+    TagBox[
+     RowBox[{"(", "\[NoBreak]", GridBox[{
+        {"0", "0", "0", "0"},
+        {"0", "0", 
+         RowBox[{"-", "z"}], "y"},
+        {"0", "z", "0", 
+         RowBox[{"-", "x"}]},
+        {"0", 
+         RowBox[{"-", "y"}], "x", "0"}
+       },
+       GridBoxDividers->{
+        "ColumnsIndexed" -> {2 -> True}, "RowsIndexed" -> {2 -> True}}], 
+      "\[NoBreak]", ")"}],
+     Function[BoxForm`e$, 
+      MatrixForm[BoxForm`e$]]], "\[Transpose]"]}], " ", "//", 
+  "Assert"}]], "Input",
+ CellChangeTimes->{{3.54381855875*^9, 3.543818758734375*^9}, {
+   3.54381890784375*^9, 3.5438189225*^9}, {3.5438219860625*^9, 
+   3.5438219925625*^9}, 3.543831934484375*^9, 3.543859795875*^9}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186389046875*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["Q",
+  FontWeight->"Bold"],
+ "\[ThinSpace]\[CenterDot]\[ThinSpace]",
+ StyleBox["Q",
+  FontWeight->"Bold"],
+ " + 2\[ThinSpace]",
+ StyleBox["Q",
+  FontWeight->"Bold"],
+ "\[ThinSpace]\[CenterDot]\[ThinSpace](vector part) form.\nNote that the \
+vector part is a pure imaginary part of a quaternion."
+}], "TextGroup",
+ CellChangeTimes->{{3.543819821359375*^9, 3.543819843078125*^9}, {
+  3.543826389625*^9, 3.543826419640625*^9}, {3.54383968759375*^9, 
+  3.543839688359375*^9}, {3.543864284671875*^9, 3.543864346671875*^9}, {
+  3.57020710790625*^9, 3.570207110515625*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"To\[ScriptCapitalQ]", "@", "0"}], "\[Equal]", 
+   RowBox[{
+    SuperscriptBox["q", "2"], "+", 
+    RowBox[{"2", 
+     RowBox[{"q", "\[CenterDot]", 
+      RowBox[{"To\[ScriptCapitalQ]", "@", 
+       RowBox[{"Im", "[", 
+        SuperscriptBox["q", "*"], "]"}]}]}]}], "-", 
+    SuperscriptBox[
+     RowBox[{"\[LeftBracketingBar]", "q", "\[RightBracketingBar]"}], "2"]}]}],
+   " ", "//", "Assert"}]], "Input",
+ CellChangeTimes->{{3.543825748546875*^9, 3.543825832421875*^9}, {
+   3.543825944140625*^9, 3.54382599203125*^9}, {3.543826054625*^9, 
+   3.54382611740625*^9}, {3.54382616028125*^9, 3.54382621453125*^9}, {
+   3.543826293359375*^9, 3.543826337453125*^9}, 3.54383192653125*^9, 
+   3.543859795828125*^9, 3.5439888478125*^9}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.54418638909375*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Assert", "[", " ", 
+  RowBox[{
+   SubscriptBox["Q", "q"], " ", "==", 
+   RowBox[{
+    RowBox[{
+     SubscriptBox[
+      TagBox[
+       RowBox[{" ", "L"}],
+       Function[BoxForm`e$, 
+        MatrixForm[BoxForm`e$]]], "q"], "\[CenterDot]", 
+     SubscriptBox[
+      TagBox["L",
+       Function[BoxForm`e$, 
+        MatrixForm[BoxForm`e$]]], "q"]}], "+", 
+    RowBox[{"2", 
+     RowBox[{
+      SubscriptBox["L", "q"], "\[CenterDot]", 
+      TagBox[
+       RowBox[{"(", "\[NoBreak]", GridBox[{
+          {"0", "x", "y", "z"},
+          {
+           RowBox[{"-", "x"}], "0", "0", "0"},
+          {
+           RowBox[{"-", "y"}], "0", "0", "0"},
+          {
+           RowBox[{"-", "z"}], "0", "0", "0"}
+         },
+         GridBoxDividers->{
+          "ColumnsIndexed" -> {2 -> True}, "RowsIndexed" -> {2 -> True}}], 
+        "\[NoBreak]", ")"}],
+       Function[BoxForm`e$, 
+        MatrixForm[BoxForm`e$]]]}]}]}], " ", "\[IndentingNewLine]", 
+   "\[Equal]", 
+   RowBox[{
+    RowBox[{
+     SubscriptBox[
+      TagBox[
+       RowBox[{" ", "L"}],
+       Function[BoxForm`e$, 
+        MatrixForm[BoxForm`e$]]], "q"], "\[CenterDot]", 
+     SubscriptBox[
+      TagBox["L",
+       Function[BoxForm`e$, 
+        MatrixForm[BoxForm`e$]]], "q"]}], "+", 
+    RowBox[{"2", 
+     RowBox[{
+      SubscriptBox["L", "q"], "\[CenterDot]", 
+      RowBox[{"(", 
+       RowBox[{
+        FractionBox["1", "2"], 
+        RowBox[{"(", 
+         RowBox[{
+          SubscriptBox["R", 
+           SuperscriptBox["q", "*"]], "-", 
+          SubscriptBox["L", "q"]}], ")"}]}], ")"}]}]}]}], " ", 
+   "\[IndentingNewLine]", "\[Equal]", 
+   RowBox[{
+    SubscriptBox[
+     TagBox[
+      RowBox[{" ", "L"}],
+      Function[BoxForm`e$, 
+       MatrixForm[BoxForm`e$]]], "q"], "\[CenterDot]", 
+    SubscriptBox["R", 
+     SuperscriptBox["q", "*"]]}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{
+  3.543562700578125*^9, 3.543562853859375*^9, {3.543563030875*^9, 
+   3.54356309909375*^9}, {3.543563712171875*^9, 3.543563717125*^9}, {
+   3.543563758640625*^9, 3.54356378234375*^9}, {3.5435638913125*^9, 
+   3.543564011796875*^9}, {3.54356464109375*^9, 3.543564659421875*^9}, {
+   3.54358332415625*^9, 3.54358341103125*^9}, 3.54358347209375*^9, {
+   3.543839689765625*^9, 3.54383969134375*^9}, {3.543844736515625*^9, 
+   3.54384481240625*^9}, {3.5438448476875*^9, 3.543844863609375*^9}, {
+   3.54384493465625*^9, 3.543845025625*^9}, {3.543845089671875*^9, 
+   3.54384535034375*^9}, 3.54385979584375*^9}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.54418638915625*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    FractionBox["1", "2"], 
+    RowBox[{
+     SubscriptBox["L", 
+      SuperscriptBox["q", 
+       RowBox[{"-", "1"}]]], "\[CenterDot]", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{
+        SubscriptBox["L", "q"], "\[CenterDot]", 
+        SubscriptBox["L", "q"]}], "-", 
+       SubscriptBox["Q", "q"]}], ")"}]}]}], "==", 
+   RowBox[{
+    FractionBox["1", "2"], 
+    RowBox[{"(", 
+     RowBox[{
+      SubscriptBox["L", "q"], "-", 
+      SubscriptBox["R", 
+       SuperscriptBox["q", "*"]]}], ")"}]}]}], " ", "//", "Assert"}]], "Input",\
+
+ CellChangeTimes->{{3.543825350625*^9, 3.54382538571875*^9}, {
+   3.5438254400625*^9, 3.543825615953125*^9}, {3.543825646734375*^9, 
+   3.54382568675*^9}, {3.5438259983125*^9, 3.543826008640625*^9}, 
+   3.54383192925*^9, {3.543839692375*^9, 3.543839693140625*^9}, 
+   3.54385979584375*^9}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.54418638921875*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell["\<\
+Equality of rotation matrix from quaternion and Euler-Rodrigues' formula\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.54342569109375*^9, 3.543425734515625*^9}, {
+   3.54342678675*^9, 3.543426808109375*^9}, {3.5434696968125*^9, 
+   3.543469717125*^9}, {3.543470547984375*^9, 3.5434705485*^9}, {
+   3.5434919405*^9, 3.543491940921875*^9}, {3.5434990198125*^9, 
+   3.543499147875*^9}, {3.543499195296875*^9, 3.543499260640625*^9}, {
+   3.543499292921875*^9, 3.54349951053125*^9}, {3.543499638*^9, 
+   3.543499661484375*^9}, {3.54349990071875*^9, 3.54349997009375*^9}, {
+   3.543500900421875*^9, 3.543500919671875*^9}, {3.543500953875*^9, 
+   3.543500997234375*^9}, {3.543501097421875*^9, 3.543501100796875*^9}, {
+   3.54350120434375*^9, 3.54350120621875*^9}, {3.543501242125*^9, 
+   3.543501375671875*^9}, {3.5435015098125*^9, 3.54350154471875*^9}, {
+   3.5435016909375*^9, 3.543501703265625*^9}, {3.543501755140625*^9, 
+   3.54350182103125*^9}, {3.54357703259375*^9, 3.5435770381875*^9}, {
+   3.54382693590625*^9, 3.54382693946875*^9}, {3.543863577171875*^9, 
+   3.5438635881875*^9}, 3.543863656109375*^9, 3.5706880513125*^9}],
+
+Cell[TextData[{
+ "Euler-Rodrigues' formula for the rotation matrix corresponding to a \
+rotation by an angle \[Theta] about a fixed axis specified by the unit vector \
+",
+ StyleBox["u",
+  FontWeight->"Bold"],
+ "."
+}], "TextGroup",
+ CellChangeTimes->{{3.54342569109375*^9, 3.5434258448125*^9}, {
+   3.54342714475*^9, 3.54342716734375*^9}, {3.543427285578125*^9, 
+   3.54342730778125*^9}, {3.543469907640625*^9, 3.543469908078125*^9}, {
+   3.543469983984375*^9, 3.543470166109375*^9}, {3.543500167234375*^9, 
+   3.54350017109375*^9}, 3.54350174715625*^9, {3.54350378890625*^9, 
+   3.543503814515625*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Reference: ",
+ StyleBox["http://mathworld.wolfram.com/RodriguesRotationFormula.html",
+  FontFamily->"Verdana",
+  FontSize->11]
+}], "TextGroup",
+ CellChangeTimes->{{3.54342569109375*^9, 3.5434258448125*^9}, {
+   3.54342714475*^9, 3.54342716734375*^9}, {3.543427285578125*^9, 
+   3.54342730778125*^9}, {3.543469907640625*^9, 3.543469908078125*^9}, {
+   3.543469983984375*^9, 3.543470166109375*^9}, {3.543500167234375*^9, 
+   3.54350017109375*^9}, 3.54350174715625*^9, {3.54350378890625*^9, 
+   3.543503814515625*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"EulerRodrigues", "[", " ", 
+   RowBox[{"\[Theta]_", ",", 
+    RowBox[{"{", " ", 
+     RowBox[{"x_", ",", "y_", ",", "z_"}], " ", "}"}]}], " ", "]"}], ":=", 
+  "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"Cos", "[", "\[Theta]", "]"}], 
+    RowBox[{"(", "\[NoBreak]", GridBox[{
+       {"1", "0", "0"},
+       {"0", "1", "0"},
+       {"0", "0", "1"}
+      },
+      GridBoxAlignment->{
+       "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+        "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+      GridBoxSpacings->{"Columns" -> {
+          Offset[0.27999999999999997`], {
+           Offset[0.7]}, 
+          Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+          Offset[0.2], {
+           Offset[0.4]}, 
+          Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}]}], "+", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"1", "-", 
+      RowBox[{"Cos", "[", "\[Theta]", "]"}]}], ")"}], 
+    TagBox[
+     RowBox[{"(", "\[NoBreak]", GridBox[{
+        {
+         RowBox[{"x", " ", "x"}], 
+         RowBox[{"y", " ", "x"}], 
+         RowBox[{"z", " ", "x"}]},
+        {
+         RowBox[{"x", " ", "y"}], 
+         RowBox[{"y", " ", "y"}], 
+         RowBox[{"z", " ", "y"}]},
+        {
+         RowBox[{"x", " ", "z"}], 
+         RowBox[{"y", " ", "z"}], 
+         RowBox[{"z", " ", "z"}]}
+       },
+       GridBoxAlignment->{
+        "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+         "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+       GridBoxSpacings->{"Columns" -> {
+           Offset[0.27999999999999997`], {
+            Offset[0.7]}, 
+           Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+           Offset[0.2], {
+            Offset[0.4]}, 
+           Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+     Function[BoxForm`e$, 
+      MatrixForm[BoxForm`e$]]]}], "+", 
+   RowBox[{
+    RowBox[{"Sin", "[", "\[Theta]", "]"}], 
+    TagBox[
+     RowBox[{"(", "\[NoBreak]", GridBox[{
+        {"0", 
+         RowBox[{"-", "z"}], "y"},
+        {"z", "0", 
+         RowBox[{"-", "x"}]},
+        {
+         RowBox[{"-", "y"}], "x", "0"}
+       },
+       GridBoxAlignment->{
+        "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+         "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+       GridBoxSpacings->{"Columns" -> {
+           Offset[0.27999999999999997`], {
+            Offset[0.7]}, 
+           Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+           Offset[0.2], {
+            Offset[0.4]}, 
+           Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+     Function[BoxForm`e$, 
+      MatrixForm[BoxForm`e$]]]}]}]}]], "Input",
+ CellChangeTimes->{{3.543411505890625*^9, 3.54341171271875*^9}, {
+   3.543411875453125*^9, 3.54341188178125*^9}, {3.543413518609375*^9, 
+   3.543413549546875*^9}, {3.543413627890625*^9, 3.543413720734375*^9}, {
+   3.543413975671875*^9, 3.543413978484375*^9}, {3.54342533428125*^9, 
+   3.543425337953125*^9}, {3.543427191578125*^9, 3.543427210515625*^9}, 
+   3.543427559296875*^9, 3.54342761371875*^9, {3.543429123578125*^9, 
+   3.543429144796875*^9}, {3.54342938659375*^9, 3.543429389109375*^9}, 
+   3.543429436109375*^9, 3.543429491328125*^9, {3.543430778765625*^9, 
+   3.543430783984375*^9}, {3.543430897578125*^9, 3.5434309006875*^9}, {
+   3.5434654393125*^9, 3.54346545465625*^9}, {3.543469199859375*^9, 
+   3.543469303890625*^9}, 3.543469493984375*^9, {3.54346955715625*^9, 
+   3.5434696166875*^9}, {3.5434701789375*^9, 3.543470212609375*^9}, {
+   3.543470751953125*^9, 3.54347076221875*^9}, {3.543470798265625*^9, 
+   3.543470799171875*^9}, {3.54349058596875*^9, 3.54349058778125*^9}, {
+   3.54349102296875*^9, 3.54349102409375*^9}, {3.54349176725*^9, 
+   3.543491794109375*^9}, {3.5435038589375*^9, 3.54350387546875*^9}, {
+   3.54357681484375*^9, 3.543576815609375*^9}, {3.5438150918125*^9, 
+   3.54381509271875*^9}, {3.543863430375*^9, 3.543863432453125*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Proof that the rotation matrix from a quaternion (as defined in Quat.m \
+package) is equivalent to Euler-Rodrigues' formula.\
+\>", "TextGroup",
+ PageBreakBelow->False,
+ CellChangeTimes->{{3.54342569109375*^9, 3.5434258448125*^9}, {
+   3.54342714475*^9, 3.54342716734375*^9}, {3.543427285578125*^9, 
+   3.54342730778125*^9}, {3.543469907640625*^9, 3.543469908078125*^9}, {
+   3.543469983984375*^9, 3.543470166109375*^9}, {3.543500167234375*^9, 
+   3.54350017109375*^9}, 3.54350174715625*^9, {3.54350378890625*^9, 
+   3.543503814515625*^9}, {3.543863608625*^9, 3.5438636689375*^9}, {
+   3.570207129375*^9, 3.5702071353125*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Block", "[", " ", 
+  RowBox[{
+   RowBox[{"{", "  ", 
+    RowBox[{"x", ",", "y", ",", "z", ",", "\[Theta]", ",", "q"}], " ", "}"}], 
+   ",", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"q", "=", 
+     RowBox[{"To\[ScriptCapitalQ]$AngleAxis", "[", " ", 
+      RowBox[{"\[Theta]", ",", 
+       RowBox[{"{", " ", 
+        RowBox[{"x", ",", "y", ",", "z"}], " ", "}"}]}], " ", "]"}]}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Assert", "[", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"RotationMatrix", "[", "  ", "q", " ", "]"}], " ", "\[Equal]", 
+       " ", 
+       RowBox[{"EulerRodrigues", "[", " ", 
+        RowBox[{"\[Theta]", ",", 
+         RowBox[{"{", " ", 
+          RowBox[{"x", ",", "y", ",", "z"}], " ", "}"}]}], " ", "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Assumptions", "\[Rule]", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", "\[Pi]"}], "\[LessEqual]", "\[Theta]", "\[LessEqual]", 
+         "\[Pi]"}], "\[And]", 
+        RowBox[{
+         RowBox[{
+          SuperscriptBox["x", "2"], "+", 
+          SuperscriptBox["y", "2"], "+", 
+          SuperscriptBox["z", "2"]}], "\[Equal]", "1"}], "\[And]", 
+        RowBox[{
+         RowBox[{"{", " ", 
+          RowBox[{"x", ",", "y", ",", "z", ",", "\[Theta]"}], " ", "}"}], 
+         "\[Element]", "Reals"}]}]}]}], "\[IndentingNewLine]", "]"}]}]}], 
+  "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.54346950265625*^9, 3.54346950465625*^9}, {
+   3.543470224265625*^9, 3.543470238140625*^9}, {3.543490592328125*^9, 
+   3.543490595390625*^9}, {3.543576834765625*^9, 3.54357690459375*^9}, {
+   3.543576942390625*^9, 3.543576978203125*^9}, 3.5435772249375*^9, {
+   3.543582678453125*^9, 3.543582682859375*^9}, {3.5438152065625*^9, 
+   3.543815217203125*^9}, {3.54383225078125*^9, 3.5438322625*^9}, {
+   3.5438474348125*^9, 3.5438474564375*^9}, 3.543859790359375*^9, {
+   3.543863442359375*^9, 3.543863545828125*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.54418638940625*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Rotation matrix theorems", "Subsubsection",
+ CellChangeTimes->{{3.543819821359375*^9, 3.543819860765625*^9}, {
+   3.543822056515625*^9, 3.543822062359375*^9}, {3.54382419021875*^9, 
+   3.543824191453125*^9}, {3.543827535265625*^9, 3.5438275701875*^9}, 
+   3.543827604921875*^9, {3.543905018859375*^9, 3.54390502171875*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"RM", " ", "=", " ", 
+   RowBox[{"RotationMatrix4", "[", " ", "q", " ", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"RM", " ", "//", "QForm"}]}], "Input",
+ CellChangeTimes->{
+  3.543846025390625*^9, {3.543864156*^9, 3.543864171015625*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  RowBox[{"(", "\[NoBreak]", GridBox[{
+     {"1", "0", "0", "0"},
+     {"0", 
+      RowBox[{"1", "-", 
+       RowBox[{"2", " ", 
+        RowBox[{"(", 
+         RowBox[{
+          SuperscriptBox["y", "2"], "+", 
+          SuperscriptBox["z", "2"]}], ")"}]}]}], 
+      RowBox[{
+       RowBox[{"2", " ", "x", " ", "y"}], "-", 
+       RowBox[{"2", " ", "w", " ", "z"}]}], 
+      RowBox[{
+       RowBox[{"2", " ", "w", " ", "y"}], "+", 
+       RowBox[{"2", " ", "x", " ", "z"}]}]},
+     {"0", 
+      RowBox[{
+       RowBox[{"2", " ", "x", " ", "y"}], "+", 
+       RowBox[{"2", " ", "w", " ", "z"}]}], 
+      RowBox[{"1", "-", 
+       RowBox[{"2", " ", 
+        RowBox[{"(", 
+         RowBox[{
+          SuperscriptBox["x", "2"], "+", 
+          SuperscriptBox["z", "2"]}], ")"}]}]}], 
+      RowBox[{
+       RowBox[{
+        RowBox[{"-", "2"}], " ", "w", " ", "x"}], "+", 
+       RowBox[{"2", " ", "y", " ", "z"}]}]},
+     {"0", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"-", "2"}], " ", "w", " ", "y"}], "+", 
+       RowBox[{"2", " ", "x", " ", "z"}]}], 
+      RowBox[{
+       RowBox[{"2", " ", "w", " ", "x"}], "+", 
+       RowBox[{"2", " ", "y", " ", "z"}]}], 
+      RowBox[{"1", "-", 
+       RowBox[{"2", " ", 
+        RowBox[{"(", 
+         RowBox[{
+          SuperscriptBox["x", "2"], "+", 
+          SuperscriptBox["y", "2"]}], ")"}]}]}]}
+    },
+    GridBoxAlignment->{
+     "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
+      "RowsIndexed" -> {}},
+    GridBoxDividers->{"Columns" -> {False, 
+        GrayLevel[0.84]}, "Rows" -> {False, 
+        GrayLevel[0.84]}},
+    GridBoxSpacings->{"Columns" -> {
+        Offset[0.27999999999999997`], {
+         Offset[0.7]}, 
+        Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+        Offset[0.2], {
+         Offset[0.4]}, 
+        Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+  DisplayForm]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186389453125*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Assert", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"RM", " ", "\[Equal]", " ", 
+     SubscriptBox["Q", "q"], " ", "\[Equal]", " ", 
+     RowBox[{
+      SubscriptBox["L", "q"], "\[CenterDot]", 
+      SubscriptBox["R", 
+       SuperscriptBox["q", "*"]]}]}], "  ", "\[And]", "\[IndentingNewLine]", 
+    RowBox[{
+     SuperscriptBox["RM", "\[Transpose]"], " ", "\[Equal]", " ", 
+     SubscriptBox["Q", 
+      SuperscriptBox["q", "*"]], " ", "\[Equal]", " ", 
+     RowBox[{
+      SubsuperscriptBox["R", 
+       SuperscriptBox["q", "*"], "\[Transpose]"], "\[CenterDot]", 
+      SubsuperscriptBox["L", "q", "\[Transpose]"]}]}]}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"Assumptions", "\[Rule]", 
+    RowBox[{
+     SuperscriptBox[
+      RowBox[{"\[LeftBracketingBar]", "q", "\[RightBracketingBar]"}], "2"], 
+     "\[Equal]", "1"}]}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.54381695140625*^9, 3.543817117421875*^9}, {
+   3.54381729965625*^9, 3.543817384171875*^9}, {3.543817443234375*^9, 
+   3.543817448921875*^9}, 3.543818997296875*^9, {3.543823828953125*^9, 
+   3.543823880875*^9}, 3.543825893671875*^9, {3.54383194653125*^9, 
+   3.54383197521875*^9}, {3.543845491859375*^9, 3.543845521375*^9}, {
+   3.54384570284375*^9, 3.543845805*^9}, {3.543845848578125*^9, 
+   3.5438458740625*^9}, {3.543845911875*^9, 3.54384603271875*^9}, 
+   3.543859795921875*^9}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186389515625*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Assert", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"RM", "\[CenterDot]", 
+     RowBox[{"ToVector", "[", "q1", "]"}]}], "\[IndentingNewLine]", "\t", 
+    "\[Equal]", " ", 
+    RowBox[{
+     SubscriptBox["L", "q"], "\[CenterDot]", 
+     SubscriptBox["R", 
+      SuperscriptBox["q", "*"]], "\[CenterDot]", 
+     RowBox[{"ToVector", "[", "q1", "]"}]}], "\[IndentingNewLine]", "\t", 
+    "\[Equal]", " ", 
+    RowBox[{"ToVector", "[", " ", 
+     RowBox[{"q", "\[CenterDot]", "q1", "\[CenterDot]", 
+      SuperscriptBox["q", "*"]}], " ", "]"}]}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Assumptions", "\[Rule]", 
+    RowBox[{
+     SuperscriptBox[
+      RowBox[{"\[LeftBracketingBar]", "q", "\[RightBracketingBar]"}], "2"], 
+     "\[Equal]", "1"}]}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.54366475571875*^9, 3.543664909421875*^9}, {
+   3.54368090603125*^9, 3.5436809368125*^9}, {3.543682049375*^9, 
+   3.54368205153125*^9}, {3.543817419140625*^9, 3.54381743765625*^9}, {
+   3.543819008875*^9, 3.543819055796875*^9}, {3.543819102203125*^9, 
+   3.543819138578125*^9}, {3.543819177828125*^9, 3.543819289109375*^9}, 
+   3.54381932221875*^9, {3.543819414625*^9, 3.54381951459375*^9}, {
+   3.54382200103125*^9, 3.5438220058125*^9}, {3.54382374975*^9, 
+   3.543823782921875*^9}, 3.5438258969375*^9, {3.543831999453125*^9, 
+   3.543832045828125*^9}, {3.5438322975625*^9, 3.543832299046875*^9}, {
+   3.54383969715625*^9, 3.543839704609375*^9}, {3.5438456505*^9, 
+   3.543845662015625*^9}, {3.54384603753125*^9, 3.5438460405*^9}, 
+   3.543859795921875*^9, {3.5439085363125*^9, 3.543908574453125*^9}, {
+   3.543908619703125*^9, 3.543908634578125*^9}, {3.54390869525*^9, 
+   3.54390871996875*^9}, 3.543908772546875*^9, 3.54390882496875*^9, {
+   3.543909400671875*^9, 3.543909417859375*^9}, {3.54390957471875*^9, 
+   3.54390961259375*^9}, {3.54398884840625*^9, 3.543988849078125*^9}, {
+   3.543989115125*^9, 3.543989117390625*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186389640625*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Assert", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"RM", "\[CenterDot]", "A", "\[CenterDot]", 
+     SuperscriptBox["RM", "\[Transpose]"]}], "\[IndentingNewLine]", "\t", 
+    "\[Equal]", " ", 
+    RowBox[{
+     SubscriptBox["Q", "q"], "\[CenterDot]", "A", "\[CenterDot]", 
+     SubscriptBox["Q", 
+      SuperscriptBox["q", "*"]]}], "\[IndentingNewLine]", "\t", "\[Equal]", 
+    " ", 
+    RowBox[{
+     SubscriptBox["L", "q"], "\[CenterDot]", 
+     SubscriptBox["R", 
+      SuperscriptBox["q", "*"]], "\[CenterDot]", "A", "\[CenterDot]", 
+     SubscriptBox["L", 
+      SuperscriptBox["q", "*"]], "\[CenterDot]", 
+     SubscriptBox["R", "q"]}], "\[IndentingNewLine]", "\t", "\[Equal]", " ", 
+    SuperscriptBox[
+     RowBox[{"(", " ", 
+      RowBox[{"q", "\[CenterDot]", 
+       SuperscriptBox[
+        RowBox[{"(", " ", 
+         RowBox[{"q", "\[CenterDot]", "A", "\[CenterDot]", 
+          SuperscriptBox["q", "*"]}], " ", ")"}], "\[Transpose]"], 
+       "\[CenterDot]", 
+       SuperscriptBox["q", "*"]}], " ", ")"}], "\[Transpose]"]}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"Assumptions", "\[Rule]", 
+    RowBox[{
+     SuperscriptBox[
+      RowBox[{"\[LeftBracketingBar]", "q", "\[RightBracketingBar]"}], "2"], 
+     "\[Equal]", "1"}]}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.54366475571875*^9, 3.543664909421875*^9}, {
+   3.54368090603125*^9, 3.5436809368125*^9}, {3.543682049375*^9, 
+   3.54368205153125*^9}, {3.543817419140625*^9, 3.54381743765625*^9}, {
+   3.543819008875*^9, 3.543819055796875*^9}, {3.543819102203125*^9, 
+   3.543819138578125*^9}, {3.543819177828125*^9, 3.543819289109375*^9}, 
+   3.54381932221875*^9, {3.543819414625*^9, 3.54381951459375*^9}, {
+   3.54382200103125*^9, 3.5438220058125*^9}, {3.54382374975*^9, 
+   3.543823782921875*^9}, 3.5438258969375*^9, {3.543831999453125*^9, 
+   3.543832045828125*^9}, {3.5438322975625*^9, 3.543832299046875*^9}, {
+   3.54383969715625*^9, 3.543839704609375*^9}, {3.5438456505*^9, 
+   3.543845662015625*^9}, {3.54384603753125*^9, 3.5438460405*^9}, 
+   3.543859795921875*^9, {3.5439887858125*^9, 3.5439887858125*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.54418639490625*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Assert", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"I4", "\[IndentingNewLine]", "\t", "\[Equal]", " ", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"q", "\[CenterDot]", "I4", "\[CenterDot]", 
+       SuperscriptBox["q", "*"]}], ")"}], "\[CenterDot]", "I4", 
+     "\[CenterDot]", 
+     SuperscriptBox[
+      RowBox[{"(", 
+       RowBox[{"q", "\[CenterDot]", "I4", "\[CenterDot]", 
+        SuperscriptBox["q", "*"]}], ")"}], "\[Transpose]"]}], " ", 
+    "\[IndentingNewLine]", "\t", "\[Equal]", " ", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       SubscriptBox["L", "q"], "\[CenterDot]", 
+       SubscriptBox["R", 
+        SuperscriptBox["q", "*"]]}], ")"}], "\[CenterDot]", "I4", 
+     "\[CenterDot]", 
+     SuperscriptBox[
+      RowBox[{"(", 
+       RowBox[{
+        SubscriptBox["L", "q"], "\[CenterDot]", 
+        SubscriptBox["R", 
+         SuperscriptBox["q", "*"]]}], ")"}], "\[Transpose]"]}], 
+    "\[IndentingNewLine]", "\t", "\[Equal]", " ", 
+    RowBox[{
+     SubscriptBox["L", "q"], "\[CenterDot]", 
+     SubscriptBox["R", 
+      SuperscriptBox["q", "*"]], "\[CenterDot]", "I4", "\[CenterDot]", 
+     SubsuperscriptBox["R", 
+      SuperscriptBox["q", "*"], "\[Transpose]"], "\[CenterDot]", 
+     SubsuperscriptBox["L", "q", "\[Transpose]"]}], "\[IndentingNewLine]", 
+    "\t", "\[Equal]", " ", 
+    RowBox[{
+     SubscriptBox["L", "q"], "\[CenterDot]", 
+     RowBox[{"(", 
+      RowBox[{
+       SubscriptBox["R", 
+        SuperscriptBox["q", "*"]], "\[CenterDot]", "I4", "\[CenterDot]", 
+       SubsuperscriptBox["R", 
+        SuperscriptBox["q", "*"], "\[Transpose]"]}], ")"}], "\[CenterDot]", 
+     SubsuperscriptBox["L", "q", "\[Transpose]"]}]}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"Assumptions", "\[Rule]", 
+    RowBox[{
+     SuperscriptBox[
+      RowBox[{"\[LeftBracketingBar]", "q", "\[RightBracketingBar]"}], "2"], 
+     "\[Equal]", "1"}]}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.5438226441875*^9, 3.543822694015625*^9}, {
+   3.543822732*^9, 3.543822760875*^9}, {3.543822810796875*^9, 
+   3.5438228229375*^9}, {3.543822861265625*^9, 3.543822939828125*^9}, {
+   3.543823370921875*^9, 3.543823471328125*^9}, {3.543823715890625*^9, 
+   3.5438237163125*^9}, 3.54382589971875*^9, {3.54383231621875*^9, 
+   3.543832316796875*^9}, {3.54383970528125*^9, 3.543839714453125*^9}, {
+   3.543845635421875*^9, 3.543845637765625*^9}, 3.5438597959375*^9, {
+   3.543988785828125*^9, 3.543988785828125*^9}, {3.543989118875*^9, 
+   3.543989124265625*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.54418639503125*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Assert", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"RM", "\[CenterDot]", "A", "\[CenterDot]", 
+     SuperscriptBox["RM", "\[Transpose]"]}], "\[IndentingNewLine]", "\t", 
+    "\[Equal]", " ", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"q", "\[CenterDot]", "I4", "\[CenterDot]", 
+       SuperscriptBox["q", "*"]}], ")"}], "\[CenterDot]", "A", "\[CenterDot]",
+      
+     SuperscriptBox[
+      RowBox[{"(", 
+       RowBox[{"q", "\[CenterDot]", "I4", "\[CenterDot]", 
+        SuperscriptBox["q", "*"]}], ")"}], "\[Transpose]"]}], " ", 
+    "\[IndentingNewLine]", "\t", "\[Equal]", " ", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       SubscriptBox["L", "q"], "\[CenterDot]", 
+       SubscriptBox["R", 
+        SuperscriptBox["q", "*"]]}], ")"}], "\[CenterDot]", "A", 
+     "\[CenterDot]", 
+     SuperscriptBox[
+      RowBox[{"(", 
+       RowBox[{
+        SubscriptBox["L", "q"], "\[CenterDot]", 
+        SubscriptBox["R", 
+         SuperscriptBox["q", "*"]]}], ")"}], "\[Transpose]"]}], 
+    "\[IndentingNewLine]", "\t", "\[Equal]", " ", 
+    RowBox[{
+     SubscriptBox["L", "q"], "\[CenterDot]", 
+     SubscriptBox["R", 
+      SuperscriptBox["q", "*"]], "\[CenterDot]", "A", "\[CenterDot]", 
+     SubsuperscriptBox["R", 
+      SuperscriptBox["q", "*"], "\[Transpose]"], "\[CenterDot]", 
+     SubsuperscriptBox["L", "q", "\[Transpose]"]}], "\[IndentingNewLine]", 
+    "\t", "\[Equal]", " ", 
+    RowBox[{
+     SubscriptBox["L", "q"], "\[CenterDot]", 
+     RowBox[{"(", 
+      RowBox[{
+       SubscriptBox["R", 
+        SuperscriptBox["q", "*"]], "\[CenterDot]", "A", "\[CenterDot]", 
+       SubsuperscriptBox["R", 
+        SuperscriptBox["q", "*"], "\[Transpose]"]}], ")"}], "\[CenterDot]", 
+     SubsuperscriptBox["L", "q", "\[Transpose]"]}]}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"Assumptions", "\[Rule]", 
+    RowBox[{
+     SuperscriptBox[
+      RowBox[{"\[LeftBracketingBar]", "q", "\[RightBracketingBar]"}], "2"], 
+     "\[Equal]", "1"}]}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.5438226441875*^9, 3.543822694015625*^9}, {
+   3.543822732*^9, 3.543822760875*^9}, {3.543822810796875*^9, 
+   3.5438228229375*^9}, {3.543822861265625*^9, 3.543822939828125*^9}, {
+   3.543823370921875*^9, 3.54382352296875*^9}, {3.5438236516875*^9, 
+   3.54382370725*^9}, 3.543825901953125*^9, {3.54383232040625*^9, 
+   3.5438323226875*^9}, {3.54383971559375*^9, 3.543839727375*^9}, {
+   3.543845624859375*^9, 3.543845632671875*^9}, 3.54384569975*^9, {
+   3.5438460478125*^9, 3.543846050265625*^9}, {3.543846135546875*^9, 
+   3.5438461370625*^9}, 3.543859795953125*^9, {3.54398878584375*^9, 
+   3.54398878584375*^9}, {3.543989125671875*^9, 3.54398913059375*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.5441863956875*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Proof that both ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox[
+    StyleBox["Q",
+     FontWeight->"Bold",
+     FontSlant->"Plain"], "q"], TraditionalForm]]],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox[
+    StyleBox["R",
+     FontWeight->"Bold",
+     FontSlant->"Plain"], "M"], TraditionalForm]]],
+ " are orthogonal matrices:"
+}], "TextGroup",
+ CellChangeTimes->{{3.543863315296875*^9, 3.54386337340625*^9}, {
+  3.543909656546875*^9, 3.543909657109375*^9}, {3.57020714690625*^9, 
+  3.570207147171875*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Assert", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     SubscriptBox["Q", "q"], "\[CenterDot]", 
+     SubsuperscriptBox["Q", "q", "\[Transpose]"]}], "\[IndentingNewLine]", 
+    "\t", "\[Equal]", " ", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       SubscriptBox["L", "q"], "\[CenterDot]", 
+       SubscriptBox["R", 
+        SuperscriptBox["q", "*"]]}], ")"}], "\[CenterDot]", 
+     SuperscriptBox[
+      RowBox[{"(", 
+       RowBox[{
+        SubscriptBox["L", "q"], "\[CenterDot]", 
+        SubscriptBox["R", 
+         SuperscriptBox["q", "*"]]}], ")"}], "\[Transpose]"]}], 
+    "\[IndentingNewLine]", "\t", "\[Equal]", "  ", 
+    RowBox[{
+     SubscriptBox["L", "q"], "\[CenterDot]", 
+     SubscriptBox["R", 
+      SuperscriptBox["q", "*"]], "\[CenterDot]", 
+     SuperscriptBox[
+      RowBox[{"(", 
+       SubscriptBox["R", 
+        SuperscriptBox["q", "*"]], ")"}], "\[Transpose]"], "\[CenterDot]", 
+     SuperscriptBox[
+      RowBox[{"(", 
+       SubscriptBox["L", "q"], ")"}], "\[Transpose]"]}], 
+    "\[IndentingNewLine]", "\t", "\[Equal]", "  ", 
+    RowBox[{
+     SubscriptBox["L", "q"], "\[CenterDot]", 
+     SubscriptBox["R", 
+      SuperscriptBox["q", "*"]], "\[CenterDot]", 
+     SubscriptBox["R", "q"], "\[CenterDot]", 
+     SubscriptBox["L", 
+      SuperscriptBox["q", "*"]]}], "\[IndentingNewLine]", "\t", "\[Equal]", 
+    "  ", "I4"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Assumptions", "\[Rule]", 
+    RowBox[{
+     SuperscriptBox[
+      RowBox[{"\[LeftBracketingBar]", "q", "\[RightBracketingBar]"}], "2"], 
+     "\[Equal]", "1"}]}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.5438631115*^9, 3.543863153109375*^9}, {
+  3.54386319153125*^9, 3.543863252796875*^9}, {3.543909674984375*^9, 
+  3.543909851796875*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186395796875*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Assert", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     SubscriptBox["Q", "q"], "\[CenterDot]", 
+     SubsuperscriptBox["Q", "q", "\[Transpose]"]}], "\[IndentingNewLine]", 
+    "\t", "\[Equal]", "  ", 
+    RowBox[{
+     SubscriptBox["Q", "q"], "\[CenterDot]", 
+     SubscriptBox["Q", 
+      SuperscriptBox["q", "*"]]}], "\t", "\[IndentingNewLine]", "\t", 
+    "\[Equal]", "  ", 
+    RowBox[{"RM", "\[CenterDot]", 
+     SuperscriptBox["RM", "\[Transpose]"]}], "\[IndentingNewLine]", "\t", 
+    "\[Equal]", "  ", "I4"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Assumptions", "\[Rule]", 
+    RowBox[{
+     SuperscriptBox[
+      RowBox[{"\[LeftBracketingBar]", "q", "\[RightBracketingBar]"}], "2"], 
+     "\[Equal]", "1"}]}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.5438631115*^9, 3.543863153109375*^9}, {
+  3.54386319153125*^9, 3.543863252796875*^9}, {3.543909674984375*^9, 
+  3.543909827609375*^9}, {3.543909858265625*^9, 3.543909865171875*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186395890625*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[TextData[{
+ "Quaternionic meaning of ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{
+     StyleBox["R",
+      FontSlant->"Plain"], "(", "q", ")"}], "\[CenterDot]", 
+    StyleBox["A",
+     FontSlant->"Plain"], "\[CenterDot]", 
+    SuperscriptBox[
+     RowBox[{
+      StyleBox["R",
+       FontSlant->"Plain"], "(", "q", ")"}], 
+     StyleBox["T",
+      FontSlant->"Plain"]]}], TraditionalForm]]]
+}], "Subsubsection",
+ CellChangeTimes->{{3.543730884140625*^9, 3.543730886234375*^9}, {
+   3.543817967640625*^9, 3.54381796853125*^9}, {3.543846857984375*^9, 
+   3.5438469103125*^9}, 3.543847148140625*^9, {3.543862975609375*^9, 
+   3.543863015328125*^9}, {3.54386492559375*^9, 3.54386493875*^9}, {
+   3.54386549434375*^9, 3.54386549503125*^9}, {3.543867564734375*^9, 
+   3.54386773625*^9}, 3.543867909984375*^9, {3.543870218125*^9, 
+   3.543870234*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "The hint how quaternion multplication affects a (moment of inertia or any \
+other) tensor ",
+ StyleBox["A",
+  FontWeight->"Bold"],
+ " can be seen from the earlier proven theorem:"
+}], "TextGroup",
+ PageBreakBelow->False,
+ CellChangeTimes->{{3.5438649420625*^9, 3.54386518678125*^9}, {
+   3.543865472609375*^9, 3.543865482609375*^9}, {3.54386572759375*^9, 
+   3.543865786296875*^9}, 3.54386660534375*^9, {3.543867778609375*^9, 
+   3.543867844453125*^9}, {3.543867885734375*^9, 3.543867903234375*^9}, {
+   3.570207157*^9, 3.570207166421875*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Assert", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"RM", "\[CenterDot]", "A", "\[CenterDot]", 
+     SuperscriptBox["RM", "\[Transpose]"]}], " ", "\[Equal]", " ", 
+    SuperscriptBox[
+     RowBox[{"(", " ", 
+      RowBox[{"q", "\[CenterDot]", 
+       SuperscriptBox[
+        RowBox[{"(", " ", 
+         RowBox[{"q", "\[CenterDot]", "A", "\[CenterDot]", 
+          SuperscriptBox["q", "*"]}], " ", ")"}], "\[Transpose]"], 
+       "\[CenterDot]", 
+       SuperscriptBox["q", "*"]}], " ", ")"}], "\[Transpose]"]}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"Assumptions", "\[Rule]", 
+    RowBox[{
+     SuperscriptBox[
+      RowBox[{"\[LeftBracketingBar]", "q", "\[RightBracketingBar]"}], "2"], 
+     "\[Equal]", "1"}]}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ PageBreakBelow->False,
+ CellChangeTimes->{{3.54366475571875*^9, 3.543664909421875*^9}, {
+   3.54368090603125*^9, 3.5436809368125*^9}, {3.543682049375*^9, 
+   3.54368205153125*^9}, {3.543817419140625*^9, 3.54381743765625*^9}, {
+   3.543819008875*^9, 3.543819055796875*^9}, {3.543819102203125*^9, 
+   3.543819138578125*^9}, {3.543819177828125*^9, 3.543819289109375*^9}, 
+   3.54381932221875*^9, {3.543819414625*^9, 3.54381951459375*^9}, {
+   3.54382200103125*^9, 3.5438220058125*^9}, {3.54382374975*^9, 
+   3.543823782921875*^9}, 3.5438258969375*^9, {3.543831999453125*^9, 
+   3.543832045828125*^9}, {3.5438322975625*^9, 3.543832299046875*^9}, {
+   3.54383969715625*^9, 3.543839704609375*^9}, {3.5438456505*^9, 
+   3.543845662015625*^9}, {3.54384603753125*^9, 3.5438460405*^9}, 
+   3.543859795921875*^9, {3.54386519003125*^9, 3.543865191453125*^9}, {
+   3.543869547078125*^9, 3.54386956146875*^9}, {3.54390859590625*^9, 
+   3.54390859771875*^9}, {3.543988785921875*^9, 3.543988785921875*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"\[RightTee] True (after Simplify) \[FilledRectangle]\"\>",
+  StripOnInput->False,
+  FrontFaceColor->RGBColor[0, 0, 1],
+  BackFaceColor->RGBColor[0, 0, 1],
+  GraphicsColor->RGBColor[0, 0, 1],
+  FontColor->RGBColor[0, 0, 1]]], "Output",
+ CellLabelAutoDelete->True,
+ CellChangeTimes->{3.544186396109375*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "which shows that the tensor ",
+ StyleBox["A",
+  FontWeight->"Bold"],
+ " is rotated, at first, by rotating quaternions across each column ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox[
+     StyleBox["A",
+      FontWeight->"Bold",
+      FontSlant->"Plain"], 
+     StyleBox["c",
+      FontSlant->"Plain"]], "=", 
+    RowBox[{"q", "\[CenterDot]", 
+     StyleBox["A",
+      FontWeight->"Bold",
+      FontSlant->"Plain"], "\[CenterDot]", 
+     SuperscriptBox["q", "*"]}]}], TraditionalForm]]],
+ ", and at second, by rotating quaternions across each row ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox[
+     StyleBox["A",
+      FontWeight->"Bold",
+      FontSlant->"Plain"], "rc"], "=", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      RowBox[{"q", "\[CenterDot]", 
+       SuperscriptBox[
+        RowBox[{"(", 
+         StyleBox[
+          SubscriptBox[
+           StyleBox["A",
+            FontWeight->"Bold",
+            FontSlant->"Plain"], 
+           StyleBox["c",
+            FontWeight->"Plain",
+            FontSlant->"Plain"]],
+          FontWeight->"Bold",
+          FontSlant->"Plain"], ")"}], "\[Transpose]"], "\[CenterDot]", 
+       SuperscriptBox["q", "*"]}], ")"}], "\[Transpose]"]}], 
+   TraditionalForm]]],
+ "."
+}], "TextGroup",
+ PageBreakBelow->False,
+ CellChangeTimes->{{3.5438649420625*^9, 3.543865408046875*^9}, {
+   3.543865461171875*^9, 3.5438654614375*^9}, {3.543867846984375*^9, 
+   3.5438678739375*^9}, {3.543870254640625*^9, 3.543870272265625*^9}, {
+   3.543870325890625*^9, 3.543870642828125*^9}, {3.54387067975*^9, 
+   3.543870735453125*^9}, {3.54387076625*^9, 3.54387094440625*^9}, {
+   3.543871004046875*^9, 3.54387105959375*^9}, 3.543906414734375*^9, {
+   3.543988785953125*^9, 3.543988785953125*^9}, {3.57020717090625*^9, 
+   3.57020717128125*^9}}],
+
+Cell[BoxData[
+ GraphicsBox[{
+   StyleBox[InsetBox[
+     TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+         {
+          SubscriptBox["q", "11"], 
+          SubscriptBox["q", "12"], 
+          SubscriptBox["q", "13"], 
+          SubscriptBox["q", "14"]},
+         {
+          SubscriptBox["q", "21"], 
+          SubscriptBox["q", "22"], 
+          SubscriptBox["q", "23"], 
+          SubscriptBox["q", "24"]},
+         {
+          SubscriptBox["q", "31"], 
+          SubscriptBox["q", "32"], 
+          SubscriptBox["q", "33"], 
+          SubscriptBox["q", "34"]},
+         {
+          SubscriptBox["q", "41"], 
+          SubscriptBox["q", "42"], 
+          SubscriptBox["q", "43"], 
+          SubscriptBox["q", "44"]}
+        },
+        GridBoxDividers->{
+         "ColumnsIndexed" -> {2 -> True}, "RowsIndexed" -> {2 -> True}}], 
+       "\[NoBreak]", ")"}],
+      HoldForm], {0.26391720572624305`, 0.49946358486703113`}, {-1., 0.}],
+    FontFamily->"Times New Roman",
+    FontSize->14], 
+   {Arrowheads[0.019999999999999993`], 
+    StyleBox[InsetBox[
+      RowBox[{
+       TagBox["q",
+        HoldForm], " ", "\[CenterDot]", " ", 
+       RowBox[{
+       "(", " ", 
+        ")"}]}], {0.3301798690777358, 0.8468261815294154}, {-1., 0.}],
+     FontFamily->"Times New Roman",
+     FontSize->14]}, 
+   {Arrowheads[0.019999999999999993`], 
+    StyleBox[InsetBox[
+      RowBox[{
+       RowBox[{"(", " ", ")"}], " ", "\[CenterDot]", " ", 
+       SuperscriptBox[
+        TagBox["q",
+         HoldForm], 
+        "*"]}], {0.48078227871629, 0.16520897017064853`}, {-1., 0.}],
+     FontFamily->"Times New Roman",
+     FontSize->14]}, 
+   {Arrowheads[0.019999999999999993`], 
+    StyleBox[InsetBox[
+      RowBox[{
+       TagBox["q",
+        HoldForm], " ", "\[CenterDot]", " ", 
+       RowBox[{
+       "(", " ", 
+        ")"}]}], {0.10126420642713335`, 0.5749815213352405}, {-1., 0.}],
+     FontFamily->"Times New Roman",
+     FontSize->14]}, 
+   {Arrowheads[0.019999999999999993`], 
+    StyleBox[InsetBox[
+      RowBox[{
+       RowBox[{"(", " ", ")"}], " ", "\[CenterDot]", 
+       StyleBox[" ",
+        FontWeight->"Bold",
+        FontSlant->"Plain"], 
+       TagBox[
+        SuperscriptBox["q", "*"],
+        HoldForm]}], {0.7127099895596636, 0.4147873465779589}, {-1., 0.}],
+     FontFamily->"Times New Roman",
+     FontSize->14]}, 
+   {GrayLevel[0], AbsolutePointSize[3], AbsoluteThickness[0.5], Opacity[1], 
+    Dashing[{}], Arrowheads[0.035], EdgeForm[None], 
+    ArrowBox[{{0.09638554216867473, 0.490291262135923}, {0.21385542168674704`,
+      0.490291262135923}}]}, 
+   {GrayLevel[0], AbsolutePointSize[3], AbsoluteThickness[0.5], Opacity[1], 
+    Dashing[{}], Arrowheads[0.035], EdgeForm[None], 
+    ArrowBox[{{0.8283132530120483, 0.5000000000000003}, {0.6957831325301205, 
+     0.5000000000000003}}]}, 
+   {GrayLevel[0], AbsolutePointSize[3], AbsoluteThickness[0.5], Opacity[1], 
+    Dashing[{}], Arrowheads[0.035], EdgeForm[None], 
+    ArrowBox[{{0.45481927710843373`, 0.9174757281553401}, {
+     0.45481927710843373`, 0.7330097087378644}}]}, 
+   {GrayLevel[0], AbsolutePointSize[3], AbsoluteThickness[0.5], Opacity[1], 
+    Dashing[{}], Arrowheads[0.035], EdgeForm[None], 
+    ArrowBox[{{0.46084337349397586`, 0.06796116504854396}, {
+     0.46084337349397586`, 0.2572815533980586}}]}},
+  AspectRatio->Full,
+  ImageSize->{332., 206.},
+  PlotRange->{{0, 1}, {0, 1}}]], "DisplayFormula",
+ CellChangeTimes->{{3.543826975203125*^9, 3.543827355359375*^9}, {
+  3.543847731796875*^9, 3.54384778521875*^9}, {3.543860728625*^9, 
+  3.54386091259375*^9}, {3.543861165078125*^9, 3.543861240546875*^9}, {
+  3.543867142875*^9, 3.5438671978125*^9}, {3.5438672490625*^9, 
+  3.543867265296875*^9}, {3.54390306121875*^9, 3.54390346265625*^9}, {
+  3.543903492890625*^9, 3.543903765765625*^9}, {3.543903796234375*^9, 
+  3.543903825828125*^9}, {3.543904037734375*^9, 3.543904059359375*^9}, {
+  3.543906426203125*^9, 3.54390683375*^9}, {3.543906864375*^9, 
+  3.543906913640625*^9}, {3.543910361796875*^9, 3.543910554515625*^9}, {
+  3.543988785984375*^9, 3.543988786*^9}}],
+
+Cell[TextData[{
+ "The meaning of the compound multiplications across columns and rows is \
+extracting and affecting individual components of quaternions embedded from \
+the previous rotations of the tensor. The moment of inertia tensor can always \
+be reduced to its principal axes in diagonal form. In a matrix representation \
+of a quaternion, the diagonal of the matrix contains the repeated scalar \
+(real) part of the quaternion. (For any quaternion ",
+ StyleBox["q",
+  FontSlant->"Italic"],
+ " there exist quaternion ",
+ StyleBox["p",
+  FontSlant->"Italic"],
+ " such that ",
+ StyleBox["qp",
+  FontSlant->"Italic"],
+ " is scalar.) The principal moment of inertia, on the other hand, has on its \
+diagonal three different scalars in general case, which gives origin to three \
+different quaternions that are ",
+ StyleBox["embedded",
+  FontSlant->"Italic"],
+ " and independently shuffled across-columns/rows during rotations."
+}], "Text",
+ CellChangeTimes->{{3.5438649420625*^9, 3.543865408046875*^9}, {
+   3.543865461171875*^9, 3.5438654614375*^9}, {3.543867846984375*^9, 
+   3.5438678739375*^9}, {3.543870254640625*^9, 3.543870272265625*^9}, {
+   3.543870325890625*^9, 3.543870642828125*^9}, {3.54387067975*^9, 
+   3.543870735453125*^9}, {3.54387076625*^9, 3.54387094440625*^9}, {
+   3.543871004046875*^9, 3.54387105959375*^9}, 3.543906414734375*^9, {
+   3.543907159484375*^9, 3.543907328953125*^9}, {3.5440127320757804`*^9, 
+   3.5440128979039054`*^9}, {3.570207197421875*^9, 3.570207299328125*^9}, {
+   3.57020733915625*^9, 3.57020734159375*^9}}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["References", "Section"],
+
+Cell[TextData[{
+ "[1] Eberly, David H. with a contrib. by Shoemake, Ken - ",
+ StyleBox["Game Physics",
+  FontSlant->"Italic"],
+ ", Morgan Kaufmann, 2004, Chapter 10 \"Quaternions\", pp. 507-544, ",
+ StyleBox[ButtonBox["http://books.google.se/books?id=a9SzFHPJ0mwC",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://books.google.se/books?id=a9SzFHPJ0mwC"], None}],
+  FontColor->RGBColor[0.27058823529411763`, 0.3058823529411765, 0.6]]
+}], "Text",
+ CellMargins->{{34, 10}, {6, 6}},
+ CellChangeTimes->{{3.54387227659375*^9, 3.543872277875*^9}, {
+   3.543872639078125*^9, 3.54387268696875*^9}, {3.543872783875*^9, 
+   3.543872795484375*^9}, {3.543872838296875*^9, 3.543872878765625*^9}, {
+   3.543873253765625*^9, 3.543873309625*^9}, {3.54387336078125*^9, 
+   3.5438733851875*^9}, {3.5439058094375*^9, 3.543905915546875*^9}, 
+   3.543910916171875*^9, 3.5440124916695304`*^9}],
+
+Cell[TextData[{
+ "[2] Shoemake, Ken - ",
+ StyleBox["Uniform random rotations",
+  FontSlant->"Italic"],
+ ", in: D. Kirk (Ed.), ",
+ StyleBox["Graphics Gems III",
+  FontSlant->"Italic"],
+ ", Academic Press, London, 1992, pp. 124-132, ",
+ StyleBox[ButtonBox["http://books.google.se/books?id=xmW_u3mQLmQC",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://books.google.se/books?id=xmW_u3mQLmQC"], None}],
+  FontColor->RGBColor[0.27058823529411763`, 0.3058823529411765, 0.6]]
+}], "Text",
+ CellMargins->{{34, 10}, {6, 6}},
+ CellChangeTimes->{{3.543872279828125*^9, 3.543872314765625*^9}, 
+   3.543872884125*^9, {3.543872958265625*^9, 3.543872975*^9}, {
+   3.543873160453125*^9, 3.54387324384375*^9}, {3.543873276375*^9, 
+   3.54387327784375*^9}, {3.543873368421875*^9, 3.54387339090625*^9}, {
+   3.543905609953125*^9, 3.543905635140625*^9}, {3.5439056703125*^9, 
+   3.543905703515625*^9}, {3.544168810015625*^9, 3.54416881021875*^9}}],
+
+Cell[TextData[{
+ "[3] Shoemake, Ken - ",
+ StyleBox["Quaternions",
+  FontSlant->"Italic"],
+ ", Department of Computer and Information Science, University of \
+Pennsylvania, 2005-10-07, downloaded from C+MS course CS171 at Caltech:",
+ StyleBox[" \n",
+  FontColor->RGBColor[0., 0., 0.]],
+ StyleBox[ButtonBox["http://courses.cms.caltech.edu/cs171/quatut.pdf",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://courses.cms.caltech.edu/cs171/quatut.pdf"], None}],
+  FontColor->RGBColor[0.27058823529411763`, 0.3058823529411765, 0.6]]
+}], "Text",
+ CellMargins->{{34, 10}, {6, 6}},
+ CellChangeTimes->{{3.543872279828125*^9, 3.543872314765625*^9}, 
+   3.543872884125*^9, {3.543872958265625*^9, 3.543872975*^9}, {
+   3.543873160453125*^9, 3.54387324384375*^9}, {3.543873276375*^9, 
+   3.54387327784375*^9}, {3.543873368421875*^9, 3.54387339090625*^9}, {
+   3.54390562025*^9, 3.54390562034375*^9}, {3.54391092384375*^9, 
+   3.5439109258125*^9}, {3.54391098828125*^9, 3.543911031390625*^9}, {
+   3.543911061640625*^9, 3.54391108321875*^9}, {3.57020471009375*^9, 
+   3.57020473878125*^9}}]
+}, Open  ]]
+}, Open  ]]
+},
+AutoGeneratedPackage->None,
+ScreenStyleEnvironment->"Presentation",
+WindowToolbars->"RulerBar",
+WindowSize->{942, 1076},
+WindowMargins->{{Automatic, 298}, {Automatic, 0}},
+PrintingCopies->1,
+PrintingPageRange->{Automatic, Automatic},
+PrintingOptions->{"PrintCellBrackets"->False,
+"PrintMultipleHorizontalPages"->False,
+"PrintRegistrationMarks"->False,
+"PrintingMargins"->{{56.6875, 56.6875}, {42.5, 56.6875}}},
+ShowSelection->True,
+Magnification->1.,
+FrontEndVersion->"6.0 for Microsoft Windows (32-bit) (May 21, 2008)",
+StyleDefinitions->"UCM-Stylesheet.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[590, 23, 866, 12, 67, "Title"],
+Cell[1459, 37, 347, 7, 46, "Subtitle"],
+Cell[1809, 46, 503, 10, 57, "Text"],
+Cell[2315, 58, 908, 14, 57, "Text"],
+Cell[3226, 74, 786, 13, 33, "Text"],
+Cell[4015, 89, 4423, 120, 175, "DisplayFormula"],
+Cell[8441, 211, 525, 9, 33, "Text"],
+Cell[8969, 222, 668, 11, 57, "Text"],
+Cell[CellGroupData[{
+Cell[9662, 237, 228, 3, 63, "Section"],
+Cell[CellGroupData[{
+Cell[9915, 244, 567, 11, 33, "TextGroup"],
+Cell[10485, 257, 472, 11, 29, "Input"]
+}, Open  ]],
+Cell[10972, 271, 371, 5, 35, "Subsubsection"],
+Cell[11346, 278, 947, 23, 101, "TextGroup"],
+Cell[CellGroupData[{
+Cell[12318, 305, 831, 13, 53, "TextGroup"],
+Cell[13152, 320, 1720, 43, 91, "Text"]
+}, Open  ]],
+Cell[14887, 366, 385, 6, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[15297, 376, 892, 24, 53, "TextGroup",
+ PageBreakBelow->False],
+Cell[16192, 402, 468, 10, 29, "Input"],
+Cell[16663, 414, 524, 11, 29, "Input"],
+Cell[17190, 427, 524, 11, 29, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[17751, 443, 397, 12, 33, "TextGroup",
+ PageBreakBelow->False],
+Cell[18151, 457, 222, 5, 29, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[18410, 467, 586, 17, 33, "TextGroup"],
+Cell[18999, 486, 622, 17, 82, "Input"],
+Cell[19624, 505, 574, 16, 82, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[20235, 526, 539, 11, 33, "TextGroup"],
+Cell[20777, 539, 624, 15, 82, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[21438, 559, 911, 26, 57, "TextGroup"],
+Cell[22352, 587, 756, 17, 29, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[23145, 609, 585, 8, 45, "Subsection"],
+Cell[CellGroupData[{
+Cell[23755, 621, 571, 12, 33, "TextGroup"],
+Cell[24329, 635, 1210, 34, 81, "Text"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[25576, 674, 665, 11, 33, "TextGroup"],
+Cell[26244, 687, 1371, 42, 81, "Text"],
+Cell[27618, 731, 209, 6, 33, "Text"]
+}, Open  ]],
+Cell[27842, 740, 431, 6, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[28298, 750, 624, 16, 29, "TextGroup"],
+Cell[28925, 768, 385, 7, 29, "Input"]
+}, Open  ]],
+Cell[29325, 778, 484, 7, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[29834, 789, 822, 16, 77, "TextGroup"],
+Cell[30659, 807, 467, 9, 29, "Input"]
+}, Open  ]],
+Cell[31141, 819, 509, 7, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[31675, 830, 1250, 38, 56, "TextGroup"],
+Cell[32928, 870, 5928, 152, 157, "DisplayFormula"]
+}, Open  ]],
+Cell[38871, 1025, 496, 9, 33, "TextGroup"],
+Cell[CellGroupData[{
+Cell[39392, 1038, 902, 23, 29, "TextGroup"],
+Cell[40297, 1063, 1279, 28, 99, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[41613, 1096, 893, 23, 33, "TextGroup"],
+Cell[42509, 1121, 1269, 27, 99, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[43815, 1153, 905, 22, 57, "TextGroup"],
+Cell[44723, 1177, 1448, 30, 99, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[46208, 1212, 407, 8, 33, "TextGroup"],
+Cell[46618, 1222, 1056, 32, 33, "Text"],
+Cell[47677, 1256, 385, 5, 33, "Text"],
+Cell[48065, 1263, 467, 10, 57, "Text"]
+}, Open  ]],
+Cell[48547, 1276, 604, 9, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[49176, 1289, 534, 9, 29, "TextGroup"],
+Cell[49713, 1300, 879, 25, 38, "Text"]
+}, Open  ]],
+Cell[50607, 1328, 299, 4, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[50931, 1336, 489, 8, 29, "TextGroup"],
+Cell[51423, 1346, 2839, 71, 121, "Input"],
+Cell[54265, 1419, 504, 11, 33, "Text"]
+}, Open  ]],
+Cell[54784, 1433, 503, 7, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[55312, 1444, 273, 6, 29, "TextGroup"],
+Cell[CellGroupData[{
+Cell[55610, 1454, 1322, 25, 98, "Input"],
+Cell[56935, 1481, 332, 8, 29, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[57316, 1495, 824, 16, 57, "TextGroup"],
+Cell[CellGroupData[{
+Cell[58165, 1515, 1327, 27, 100, "Input"],
+Cell[59495, 1544, 330, 8, 29, "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[59898, 1560, 276, 4, 63, "Section"],
+Cell[60177, 1566, 372, 5, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[60574, 1575, 191, 3, 29, "TextGroup",
+ PageBreakBelow->False],
+Cell[CellGroupData[{
+Cell[60790, 1582, 674, 15, 29, "Input"],
+Cell[61467, 1599, 315, 8, 29, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[61831, 1613, 261, 3, 33, "TextGroup"],
+Cell[CellGroupData[{
+Cell[62117, 1620, 855, 19, 29, "Input"],
+Cell[62975, 1641, 316, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[63328, 1654, 748, 15, 29, "Input"],
+Cell[64079, 1671, 313, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[64429, 1684, 686, 15, 29, "Input"],
+Cell[65118, 1701, 315, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[65470, 1714, 642, 15, 33, "Input"],
+Cell[66115, 1731, 316, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[66468, 1744, 687, 14, 33, "Input"],
+Cell[67158, 1760, 314, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[67509, 1773, 602, 13, 29, "Input"],
+Cell[68114, 1788, 316, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[68467, 1801, 526, 12, 29, "Input"],
+Cell[68996, 1815, 314, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[69347, 1828, 578, 13, 29, "Input"],
+Cell[69928, 1843, 315, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[70280, 1856, 938, 22, 29, "Input"],
+Cell[71221, 1880, 333, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[71591, 1893, 1655, 41, 90, "Input"],
+Cell[73249, 1936, 332, 8, 29, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[73630, 1950, 150, 1, 33, "TextGroup"],
+Cell[CellGroupData[{
+Cell[73805, 1955, 641, 13, 29, "Input"],
+Cell[74449, 1970, 314, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[74800, 1983, 659, 13, 29, "Input"],
+Cell[75462, 1998, 315, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[75814, 2011, 818, 21, 29, "Input"],
+Cell[76635, 2034, 333, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[77005, 2047, 555, 12, 29, "Input"],
+Cell[77563, 2061, 331, 8, 29, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[77921, 2073, 215, 3, 35, "Subsubsection"],
+Cell[78139, 2078, 1769, 53, 56, "TextGroup"],
+Cell[CellGroupData[{
+Cell[79933, 2135, 867, 23, 32, "TextGroup"],
+Cell[80803, 2160, 422, 7, 29, "Input"],
+Cell[81228, 2169, 741, 17, 79, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[82006, 2191, 1113, 31, 38, "TextGroup"],
+Cell[CellGroupData[{
+Cell[83144, 2226, 1820, 33, 101, "Input"],
+Cell[84967, 2261, 333, 8, 29, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[85349, 2275, 455, 6, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[85829, 2285, 770, 16, 37, "Input"],
+Cell[86602, 2303, 315, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[86954, 2316, 713, 15, 37, "Input"],
+Cell[87670, 2333, 316, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[88023, 2346, 1375, 32, 33, "Input"],
+Cell[89401, 2380, 331, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[89769, 2393, 1090, 29, 39, "Input"],
+Cell[90862, 2424, 315, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[91214, 2437, 529, 15, 33, "Input"],
+Cell[91746, 2454, 316, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[92099, 2467, 376, 11, 36, "Input"],
+Cell[92478, 2480, 327, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[92842, 2493, 1236, 26, 32, "Input"],
+Cell[94081, 2521, 333, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[94451, 2534, 1271, 26, 32, "Input"],
+Cell[95725, 2562, 316, 8, 29, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[96090, 2576, 469, 6, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[96584, 2586, 1127, 26, 103, "Input"],
+Cell[97714, 2614, 4397, 126, 103, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[102160, 2746, 475, 6, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[102660, 2756, 2058, 46, 130, "Input"],
+Cell[104721, 2804, 5380, 146, 115, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[110128, 2954, 538, 7, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[110691, 2965, 432, 7, 53, "TextGroup"],
+Cell[CellGroupData[{
+Cell[111148, 2976, 768, 13, 29, "Input"],
+Cell[111919, 2991, 2007, 61, 99, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[113953, 3056, 375, 5, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[114353, 3065, 118, 2, 29, "TextGroup"],
+Cell[CellGroupData[{
+Cell[114496, 3071, 1280, 35, 82, "Input"],
+Cell[115779, 3108, 316, 8, 29, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[116144, 3122, 121, 2, 33, "TextGroup"],
+Cell[CellGroupData[{
+Cell[116290, 3128, 1293, 37, 82, "Input"],
+Cell[117586, 3167, 314, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[117937, 3180, 1245, 38, 84, "Input"],
+Cell[119185, 3220, 316, 8, 29, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[119550, 3234, 132, 2, 33, "TextGroup"],
+Cell[CellGroupData[{
+Cell[119707, 3240, 814, 26, 82, "Input"],
+Cell[120524, 3268, 316, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[120877, 3281, 965, 30, 84, "Input"],
+Cell[121845, 3313, 316, 8, 29, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[122210, 3327, 592, 15, 57, "TextGroup"],
+Cell[CellGroupData[{
+Cell[122827, 3346, 774, 18, 32, "Input"],
+Cell[123604, 3366, 315, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[123956, 3379, 2507, 74, 182, "Input"],
+Cell[126466, 3455, 332, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[126835, 3468, 879, 27, 47, "Input"],
+Cell[127717, 3497, 332, 8, 29, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[128076, 3509, 1134, 17, 35, "Subsubsection"],
+Cell[129213, 3528, 602, 13, 29, "TextGroup"],
+Cell[CellGroupData[{
+Cell[129840, 3545, 533, 11, 29, "TextGroup"],
+Cell[130376, 3558, 3949, 96, 87, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[134362, 3659, 635, 11, 33, "TextGroup",
+ PageBreakBelow->False],
+Cell[CellGroupData[{
+Cell[135022, 3674, 1994, 45, 190, "Input"],
+Cell[137019, 3721, 332, 8, 29, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[137400, 3735, 329, 4, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[137754, 3743, 282, 7, 50, "Input"],
+Cell[138039, 3752, 2008, 61, 99, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[140084, 3818, 1423, 31, 132, "Input"],
+Cell[141510, 3851, 333, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[141880, 3864, 1984, 37, 143, "Input"],
+Cell[143867, 3903, 333, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[144237, 3916, 2154, 45, 192, "Input"],
+Cell[146394, 3963, 332, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[146763, 3976, 2529, 59, 203, "Input"],
+Cell[149295, 4037, 332, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[149664, 4050, 2729, 63, 205, "Input"],
+Cell[152396, 4115, 331, 8, 29, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[152776, 4129, 530, 19, 37, "TextGroup"],
+Cell[CellGroupData[{
+Cell[153331, 4152, 1808, 48, 203, "Input"],
+Cell[155142, 4202, 333, 8, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[155512, 4215, 1015, 23, 172, "Input"],
+Cell[156530, 4240, 333, 8, 29, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[156890, 4252, 858, 23, 37, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[157773, 4279, 561, 12, 29, "TextGroup",
+ PageBreakBelow->False],
+Cell[CellGroupData[{
+Cell[158359, 4295, 1798, 35, 121, "Input",
+ PageBreakBelow->False],
+Cell[160160, 4332, 333, 8, 29, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[160542, 4346, 1811, 54, 62, "TextGroup",
+ PageBreakBelow->False],
+Cell[162356, 4402, 4057, 102, 214, "DisplayFormula"],
+Cell[166416, 4506, 1553, 30, 153, "Text"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[168018, 4542, 29, 0, 63, "Section"],
+Cell[168050, 4544, 880, 17, 55, "Text"],
+Cell[168933, 4563, 936, 20, 50, "Text"],
+Cell[169872, 4585, 1084, 22, 74, "Text"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
