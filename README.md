@@ -1,4 +1,6 @@
-# Package for symbolic calculations with quaternions.
+# Quaternions
+
+`quat.m` is a Mathematica package for symbolic calculations with quaternions.
 
 Quaternions package implements Hamilton’s quaternion algebra.
 This package mimics original Mathematica Quaternions.m, however,
